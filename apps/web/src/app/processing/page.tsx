@@ -7,22 +7,29 @@ import { Loader2 } from 'lucide-react';
 
 export default function ProcessingPage() {
   const router = useRouter();
-  const { isGenerating } = useAppStore();
+  const { isGenerating, generatedResumeId, generationStep, pollJobStatus } = useAppStore();
 
   useEffect(() => {
-    // If we land here but aren't generating, go back home
     if (!isGenerating) {
       router.push('/');
       return;
     }
 
-    // Mock processing delay for now since backend isn't hooked up yet
-    const timer = setTimeout(() => {
-      router.push('/results');
-    }, 4000);
+    if (!generatedResumeId) return;
 
-    return () => clearTimeout(timer);
-  }, [isGenerating, router]);
+    const interval = setInterval(() => {
+      pollJobStatus(generatedResumeId);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isGenerating, generatedResumeId, pollJobStatus, router]);
+
+  // Navigate when done
+  useEffect(() => {
+    if (generationStep === 'completed') {
+      router.push('/results');
+    }
+  }, [generationStep, router]);
 
   return (
     <div className="pt-32 pb-20 px-6 min-h-screen bg-slate-950 font-inter flex flex-col items-center justify-center">

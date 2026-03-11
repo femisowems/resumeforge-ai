@@ -4,10 +4,12 @@ import React from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { Download, Copy, RefreshCw, Check, ArrowLeft, Star, Target } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function ResultsPage() {
   const router = useRouter();
-  const { matchScore, reset } = useAppStore();
+  const { matchScore, reset, generatedResumeText } = useAppStore();
   const [copied, setCopied] = React.useState(false);
 
   const handleCopy = () => {
@@ -66,42 +68,12 @@ export default function ResultsPage() {
           {/* Main Preview */}
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-white rounded-3xl shadow-2xl shadow-indigo-500/10 overflow-hidden min-h-[800px] p-12 text-slate-900 border border-slate-200">
-              {/* Mock Resume Content with premium styling */}
-              <div className="space-y-8 max-w-2xl mx-auto font-inter">
-                <div className="text-center space-y-2 pb-8 border-b border-slate-100">
-                  <h2 className="text-4xl font-black tracking-tight">ALEX FORGER</h2>
-                  <p className="text-indigo-600 font-bold tracking-widest text-xs uppercase">Senior Full Stack Engineer</p>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest pb-1 border-b-2 border-slate-900 inline-block">Professional Summary</h3>
-                  <p className="text-sm leading-relaxed text-slate-600">
-                    Innovative software engineer with 8+ years of experience specializing in high-performance cloud architectures. Proven track record of optimizing system latency by 45% and leading cross-functional teams to deliver scalable AI-powered solutions.
-                  </p>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest pb-1 border-b-2 border-slate-900 inline-block">Key Expertise</h3>
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {["React & Next.js", "Ruby on Rails", "PostgreSQL", "AWS Infrastructure", "AI Integration"].map((skill, idx) => (
-                      <span key={idx} className="px-3 py-1 bg-slate-100 rounded-md text-xs font-bold text-slate-700">{skill}</span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest pb-1 border-b-2 border-slate-900 inline-block">Experience Highlights</h3>
-                  <div className="space-y-6">
-                    <div>
-                      <h4 className="font-bold">Lead Engineer @ TechNova Solutions</h4>
-                      <p className="text-xs text-slate-400 mb-2">2021 — PRESENT</p>
-                      <ul className="list-disc list-outside ml-4 space-y-1 text-sm text-slate-600">
-                        <li>Architected a real-time data ingestion pipeline processing 10M+ events daily.</li>
-                        <li>Implemented an AI-driven predictive maintenance engine reducing downtime by 30%.</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+              <div className="max-w-2xl mx-auto prose prose-sm prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-indigo-600">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                >
+                  {generatedResumeText || '# Optimized Resume\nYour actual AI generated resume will appear here once connected.'}
+                </ReactMarkdown>
               </div>
             </div>
           </div>

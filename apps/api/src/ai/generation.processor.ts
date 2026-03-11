@@ -2,13 +2,16 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { AiService } from './ai.service';
-// In a real app we'd inject DocumentsService to save the results
+import { DocumentsService } from '../documents/documents.service';
 
 @Processor('generation')
 export class GenerationProcessor extends WorkerHost {
   private readonly logger = new Logger(GenerationProcessor.name);
 
-  constructor(private readonly aiService: AiService) {
+  constructor(
+    private readonly aiService: AiService,
+    private readonly documentsService: DocumentsService
+  ) {
     super();
   }
 
@@ -23,8 +26,18 @@ export class GenerationProcessor extends WorkerHost {
       this.logger.log(`Job ${jobId}: Forging resume...`);
       const result = await this.aiService.forgeResume(resumeText, jobDescription);
       
-      // We would save the result to the database here
       this.logger.log(`Job ${jobId}: Finished in ${Date.now() - start}ms`);
+
+      this.documentsService.saveDocument(jobId, {
+        id: jobId,
+        resumeId: jobId,
+        jobDescription,
+        status: 'completed',
+        resultText: result.optimizedText,
+        matchScore: result.matchScore,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
       
       return result;
     } catch (error) {
