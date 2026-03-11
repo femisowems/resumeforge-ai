@@ -14,16 +14,25 @@ export class ResumesController {
   @UseInterceptors(FileInterceptor('resume'))
   async uploadResume(
     @UploadedFile() file: Express.Multer.File,
-    @Body('jobDescription') jobDescription: string
+    @Body('jobDescription') jobDescription: string,
+    @Body('resumeText') resumeText?: string,
   ) {
-    if (!file) {
-      throw new BadRequestException('Resume file is required');
+    if (!file && !resumeText) {
+      throw new BadRequestException('Resume file or text is required');
     }
     if (!jobDescription) {
       throw new BadRequestException('Job description is required');
     }
 
-    const text = await this.resumesService.extractText(file);
+    let text = resumeText;
+    
+    if (file) {
+      text = await this.resumesService.extractText(file);
+    }
+
+    if (!text) {
+      throw new BadRequestException('Could not extract text from resume');
+    }
     
     // Kick off the generation queue with the parsed text
     const queueResult = await this.generationService.queueGeneration(text, jobDescription);

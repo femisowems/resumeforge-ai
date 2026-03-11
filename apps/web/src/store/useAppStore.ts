@@ -4,14 +4,16 @@ import { api } from '../lib/api';
 
 interface AppState {
   resumeFile: File | null;
+  pastedResumeText: string;
   jobDescription: string;
   isGenerating: boolean;
-  generationStep: 'idle' | 'parsing' | 'analyzing' | 'optimizing' | 'generating' | 'completed';
+  generationStep: 'idle' | 'parsing' | 'analyzing' | 'optimizing' | 'generating' | 'completed' | 'failed';
   matchScore: number | null;
   generatedResumeText: string | null;
   generatedResumeId: string | null;
   
   setResumeFile: (file: File | null) => void;
+  setPastedResumeText: (text: string) => void;
   setJobDescription: (jd: string) => void;
   startGeneration: () => Promise<void>;
   pollJobStatus: (jobId: string) => Promise<void>;
@@ -21,6 +23,7 @@ interface AppState {
 
 export const useAppStore = create<AppState>((set, get) => ({
   resumeFile: null,
+  pastedResumeText: '',
   jobDescription: '',
   isGenerating: false,
   generationStep: 'idle',
@@ -29,16 +32,21 @@ export const useAppStore = create<AppState>((set, get) => ({
   generatedResumeId: null,
 
   setResumeFile: (file) => set({ resumeFile: file }),
+  setPastedResumeText: (text) => set({ pastedResumeText: text }),
   setJobDescription: (jd) => set({ jobDescription: jd }),
   startGeneration: async () => {
-    const { resumeFile, jobDescription } = get();
-    if (!resumeFile) return;
+    const { resumeFile, pastedResumeText, jobDescription } = get();
+    if (!resumeFile && !pastedResumeText.trim()) return;
 
     set({ isGenerating: true, generationStep: 'parsing' });
 
     try {
       const formData = new FormData();
-      formData.append('resume', resumeFile);
+      if (resumeFile) {
+        formData.append('resume', resumeFile);
+      } else {
+        formData.append('resumeText', pastedResumeText);
+      }
       formData.append('jobDescription', jobDescription);
 
       // Using the centralized backend API URL
@@ -59,7 +67,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       console.error('Upload failed:', error);
       set({ 
         isGenerating: false, 
-        generationStep: 'failed' as AppState['generationStep'],
+        generationStep: 'failed',
       });
     }
   },
@@ -69,22 +77,38 @@ export const useAppStore = create<AppState>((set, get) => ({
       const response = await axios.get(api(`documents/${jobId}`));
       
       const doc = response.data;
+      console.log(`Polling status for ${jobId}:`, doc?.status);
+      
       if (doc && doc.status === 'completed') {
         set({ 
           generationStep: 'completed',
           matchScore: doc.matchScore || 85,
           generatedResumeText: doc.resultText,
         });
+      } else if (doc && doc.status === 'failed') {
+        console.warn('Job failed on server:', jobId);
+        set({ 
+          generationStep: 'failed',
+          isGenerating: false
+        });
       }
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) return;
-      console.error('Polling failed:', error);
+    } catch (error: any) {
+      console.error('Polling failed:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data
+      });
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return;
+      }
+      set({ generationStep: 'failed' });
     }
   },
 
   setGenerationStep: (step) => set({ generationStep: step }),
   reset: () => set({ 
     resumeFile: null, 
+    pastedResumeText: '',
     jobDescription: '', 
     isGenerating: false, 
     generationStep: 'idle',

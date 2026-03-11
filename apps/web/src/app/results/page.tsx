@@ -9,6 +9,8 @@ import toast from 'react-hot-toast';
 import remarkGfm from 'remark-gfm';
 import type { Components } from 'react-markdown';
 import { generateResumeFileName, NamingMetadata } from '@/lib/generateResumeFileName';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
+import { saveAs } from 'file-saver';
 
 // Custom components to render the AI resume text as a beautiful document.
 // Note: We use inline hex colors here instead of Tailwind classes because
@@ -66,6 +68,9 @@ export default function ResultsPage() {
   const { matchScore, reset, generatedResumeText, resumeFile, jobDescription } = useAppStore();
   const [copied, setCopied] = React.useState(false);
   const [downloading, setDownloading] = React.useState(false);
+  const [downloadPdfSuccess, setDownloadPdfSuccess] = React.useState(false);
+  const [downloadDocxSuccess, setDownloadDocxSuccess] = React.useState(false);
+  const [showConfirmModal, setShowConfirmModal] = React.useState(false);
   const resumeRef = React.useRef<HTMLDivElement>(null);
 
   const namingMetadata = React.useMemo<NamingMetadata>(() => {
@@ -73,19 +78,29 @@ export default function ResultsPage() {
     let role: string | undefined = undefined;
     let company: string | undefined = undefined;
 
+    const isUUID = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
     if (generatedResumeText) {
       const nameMatch = generatedResumeText.match(/^#\s+([^\n\r]+)/m);
       if (nameMatch) {
         name = nameMatch[1].trim();
-      } else if (resumeFile?.name) {
-        name = resumeFile.name.replace(/\.[^/.]+$/, "");
       }
-    } else if (resumeFile?.name) {
-      name = resumeFile.name.replace(/\.[^/.]+$/, "");
+    }
+
+    if (!name && resumeFile?.name) {
+      const fileName = resumeFile.name.replace(/\.[^/.]+$/, "");
+      if (!isUUID(fileName)) {
+        name = fileName;
+      }
+    }
+
+    // Ultimate fallback if still no name
+    if (!name && generatedResumeText) {
+      name = "Optimized-Resume";
     }
 
     if (jobDescription) {
-      // Basic heuristics to grab role and company from a standard JD text
+      // Improved heuristics for my new templates
       const roleMatch = jobDescription.match(/(?:role|title|position)[\s:]*([A-Za-z0-9\s-]+)/i);
       if (roleMatch) role = roleMatch[1].trim();
       
@@ -103,23 +118,39 @@ export default function ResultsPage() {
   const handleDownload = async () => {
     if (!resumeRef.current) return;
     
+    console.log("Starting PDF download with filename:", previewFilename);
+
     toast.promise(
       (async () => {
         setDownloading(true);
         try {
           if (!resumeRef.current) throw new Error("Resume reference not available");
+          
+          // Lazy load html2pdf
           const html2pdf = (await import('html2pdf.js')).default;
 
           const opt = {
-            margin:       0.75, // 0.75 inches for formal resume margins
-            filename:     previewFilename,
-            image:        { type: 'jpeg' as const, quality: 1 },
-            html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+            margin:       0.5, // slightly smaller margin
+            filename:     previewFilename || 'resume.pdf',
+            image:        { type: 'jpeg' as const, quality: 0.98 },
+            html2canvas:  { 
+              scale: 2, 
+              useCORS: true, 
+              letterRendering: true,
+              logging: true, // Enable logging for debugging
+            },
             jsPDF:        { unit: 'in' as const, format: 'letter' as const, orientation: 'portrait' as const },
-            pagebreak:    { mode: 'css', avoid: ['h1', 'h2', 'h3', 'h4', 'p', 'li', 'ul'] }
+            pagebreak:    { mode: 'css' }
           };
 
-          await html2pdf().from(resumeRef.current).set(opt).save();
+          const worker = html2pdf().from(resumeRef.current).set(opt);
+          await worker.save();
+          
+          setDownloadPdfSuccess(true);
+          setTimeout(() => setDownloadPdfSuccess(false), 2000);
+        } catch (err) {
+          console.error("PDF Generation error:", err);
+          throw err;
         } finally {
           setDownloading(false);
         }
@@ -127,9 +158,85 @@ export default function ResultsPage() {
       {
         loading: 'Generating high-quality PDF...',
         success: 'PDF downloaded successfully!',
-        error: 'Failed to generate PDF.',
+        error: 'Failed to generate PDF. Check console for details.',
       }
     );
+  };
+
+  // ── Download DOCX ─────────────────────────────────────────────────────────
+
+  const handleDownloadDocx = async () => {
+    if (!generatedResumeText) return;
+
+    toast.promise(
+      (async () => {
+        setDownloading(true);
+        try {
+          // Simple markdown to docx conversion logic
+          const lines = generatedResumeText.split('\n');
+          const children: any[] = [];
+
+          lines.forEach(line => {
+            const cleanLine = line.trim();
+            if (!cleanLine) {
+              children.push(new Paragraph({}));
+              return;
+            }
+
+            if (cleanLine.startsWith('# ')) {
+              children.push(new Paragraph({
+                text: cleanLine.replace('# ', ''),
+                heading: HeadingLevel.HEADING_1,
+                alignment: AlignmentType.CENTER,
+              }));
+            } else if (cleanLine.startsWith('## ')) {
+              children.push(new Paragraph({
+                text: cleanLine.replace('## ', ''),
+                heading: HeadingLevel.HEADING_2,
+                alignment: AlignmentType.CENTER,
+              }));
+            } else if (cleanLine.startsWith('### ')) {
+              children.push(new Paragraph({
+                text: cleanLine.replace('### ', ''),
+                heading: HeadingLevel.HEADING_3,
+              }));
+            } else if (cleanLine.startsWith('- ') || cleanLine.startsWith('* ')) {
+              children.push(new Paragraph({
+                children: [new TextRun(cleanLine.replace(/^[-*]\s+/, ''))],
+                bullet: { level: 0 },
+              }));
+            } else {
+              children.push(new Paragraph({
+                children: [new TextRun(cleanLine)],
+              }));
+            }
+          });
+
+          const doc = new Document({
+            sections: [{
+              properties: {},
+              children: children,
+            }],
+          });
+
+            const blob = await Packer.toBlob(doc);
+            const docxName = (previewFilename || 'resume.pdf').replace('.pdf', '') + '.docx';
+            saveAs(blob, docxName);
+            setDownloadDocxSuccess(true);
+            setTimeout(() => setDownloadDocxSuccess(false), 2000);
+          } catch (err) {
+            console.error("DOCX Generation error:", err);
+            throw err;
+          } finally {
+            setDownloading(false);
+          }
+        })(),
+        {
+          loading: 'Generating Word document...',
+          success: 'DOCX downloaded successfully!',
+          error: 'Failed to generate Word document.',
+        }
+      );
   };
 
   // ── Copy Text ─────────────────────────────────────────────────────────────
@@ -143,12 +250,14 @@ export default function ResultsPage() {
   };
 
   // ── Start Over ────────────────────────────────────────────────────────────
-  const handleReset = () => {
-    if (window.confirm("Are you sure you want to start over? Your optimized resume data will be lost.")) {
-      reset();
-      router.push('/');
-      toast('Started over', { icon: '🔄' });
-    }
+  const handleResetRequest = () => {
+    setShowConfirmModal(true);
+  };
+
+  const handleResetConfirm = () => {
+    setShowConfirmModal(false);
+    reset();
+    router.push('/');
   };
 
   const score = matchScore || 85;
@@ -162,7 +271,7 @@ export default function ResultsPage() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-3">
             <button
-              onClick={handleReset}
+              onClick={handleResetRequest}
               className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-indigo-400 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -205,7 +314,7 @@ export default function ResultsPage() {
             <div className="absolute inset-x-2 bottom-0 top-2 bg-slate-200 rounded-2xl opacity-40" />
             
             {/* Main paper */}
-            <div ref={resumeRef} className="bg-white rounded-xl shadow-2xl p-8 sm:p-12 md:p-16 max-w-[816px] mx-auto overflow-hidden ring-1 ring-slate-900/5 min-h-[1056px]">
+            <div className="bg-white rounded-xl shadow-2xl p-8 sm:p-12 md:p-16 max-w-[816px] mx-auto overflow-hidden ring-1 ring-slate-900/5 min-h-[1056px]">
               {/* Top Toolbar Bar */}
               <div className="flex items-center justify-between px-6 py-3 bg-slate-50 border-b border-slate-200">
                 <div className="flex items-center gap-2 text-slate-500">
@@ -248,19 +357,39 @@ export default function ResultsPage() {
               </h3>
               <div className="space-y-3">
                 <div>
-                  <button
-                    onClick={handleDownload}
-                    disabled={downloading}
-                    className="w-full flex items-center justify-center gap-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed text-white py-3.5 px-4 rounded-xl font-bold text-sm transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
-                  >
-                    {downloading
-                      ? <Loader2 className="w-4 h-4 animate-spin" />
-                      : <Download className="w-4 h-4" />}
-                    {downloading ? 'Generating PDF…' : 'Download PDF'}
-                  </button>
-                  <p className="text-[10px] text-slate-500 mt-2 text-center truncate px-2" title={previewFilename}>
-                    Filename: <span className="text-slate-400">{previewFilename}</span>
-                  </p>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={handleDownload}
+                  disabled={downloading || !generatedResumeText}
+                  className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed text-white py-3 px-4 rounded-xl font-bold text-xs transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
+                >
+                  {downloading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : downloadPdfSuccess ? (
+                    <Check className="w-4 h-4 text-emerald-300" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {downloadPdfSuccess ? 'Done!' : '.PDF'}
+                </button>
+                <button
+                  onClick={handleDownloadDocx}
+                  disabled={downloading || !generatedResumeText}
+                  className="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-60 disabled:cursor-not-allowed text-white py-3 px-4 rounded-xl font-bold text-xs transition-all active:scale-95 border border-slate-700"
+                >
+                  {downloading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : downloadDocxSuccess ? (
+                    <Check className="w-4 h-4 text-emerald-300" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {downloadDocxSuccess ? 'Done!' : '.DOCX'}
+                </button>
+              </div>
+              <p className="text-[10px] text-slate-500 mt-2 text-center break-all px-2" title={previewFilename.replace('.pdf', '')}>
+                Filename: <span className="text-slate-400">{previewFilename.replace('.pdf', '')}</span>
+              </p>
                 </div>
                 <button
                   onClick={handleCopy}
@@ -270,7 +399,7 @@ export default function ResultsPage() {
                   {copied ? 'Copied!' : 'Copy Text'}
                 </button>
                 <button
-                  onClick={handleReset}
+                  onClick={handleResetRequest}
                   className="w-full flex items-center justify-center gap-2.5 bg-slate-950 border border-slate-800 hover:border-slate-600 text-slate-400 hover:text-slate-200 py-3.5 px-4 rounded-xl font-bold text-sm transition-all active:scale-95"
                 >
                   <RefreshCw className="w-4 h-4" />
@@ -320,6 +449,32 @@ export default function ResultsPage() {
           </div>
         </div>
       </div>
+
+      {/* Start Over Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-200">
+            <h3 className="text-2xl font-bold text-white mb-2 font-outfit">Start Over?</h3>
+            <p className="text-slate-400 mb-8 text-sm leading-relaxed">
+              Are you sure you want to start over? Your optimized resume data and match scores will be permanently lost.
+            </p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="flex-1 py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold text-sm transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResetConfirm}
+                className="flex-1 py-3 px-4 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 hover:border-red-500/30 rounded-xl font-bold text-sm transition-colors"
+              >
+                Yes, Start Over
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

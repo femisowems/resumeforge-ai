@@ -9,6 +9,7 @@ export class AiService {
   constructor() {
     this.ai = new GoogleGenAI({
       apiKey: process.env.GEMINI_API_KEY || 'MISSING_API_KEY',
+      apiVersion: 'v1',
     });
   }
 
@@ -36,11 +37,8 @@ Please provide the output in JSON format with three exact keys:
 
     try {
       const response = await this.ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: "gemini-2.5-flash",
         contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-        }
       });
       
       const text = response.text || "{}";
@@ -53,8 +51,29 @@ Please provide the output in JSON format with three exact keys:
         matchScore: result.matchScore || 50,
         insights: result.insights || 'No insights available.',
       };
-    } catch (error) {
-      this.logger.error('Error calling Gemini API', error);
+    } catch (error: any) {
+      this.logger.error('Error calling Gemini API', error.stack);
+      if (error.status) this.logger.error(`Error Status: ${error.status}`);
+      if (error.message) this.logger.error(`Error Message: ${error.message}`);
+      
+      // Log full details of the error object for debugging
+      try {
+        this.logger.error('Full Error Object:', JSON.stringify(error, null, 2));
+      } catch (e) {
+        this.logger.error('Could not stringify error object', error);
+      }
+      
+      // Specialized debugging: attempt to list models to console to see what's actually available
+      try {
+        const response = await this.ai.models.list();
+        this.logger.warn('Listing available Gemini models for debugging:');
+        for await (const model of response) {
+          this.logger.warn(` - ${model.name}`);
+        }
+      } catch (listError) {
+        this.logger.error('Failed to list models', listError);
+      }
+      
       throw error;
     }
   }

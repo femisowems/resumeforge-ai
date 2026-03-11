@@ -42,6 +42,21 @@ export class GenerationProcessor extends WorkerHost {
       return result;
     } catch (error) {
       this.logger.error(`Job ${job.id} failed`, error.stack);
+      
+      const { jobId, jobDescription } = job.data;
+      if (jobId) {
+        this.documentsService.saveDocument(jobId, {
+          id: jobId,
+          resumeId: jobId,
+          jobDescription,
+          status: 'failed',
+          resultText: 'Failed to generate resume.',
+          matchScore: 0,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        });
+      }
+      
       throw error;
     }
   }

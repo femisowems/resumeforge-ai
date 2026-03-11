@@ -11,6 +11,8 @@
   "dependencies": {
     "@resumeforge/types": "*",
     "axios": "^1.13.6",
+    "docx": "^9.6.1",
+    "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.14.0",
     "jspdf": "^4.2.0",
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
