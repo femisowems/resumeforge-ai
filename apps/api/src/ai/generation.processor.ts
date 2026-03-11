@@ -51,6 +51,7 @@ export class GenerationProcessor extends WorkerHost {
           jobDescription,
           status: 'failed',
           resultText: 'Failed to generate resume.',
+          error: error.message || 'Unknown error during generation',
           matchScore: 0,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()

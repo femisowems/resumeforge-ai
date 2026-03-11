@@ -83,7 +83,8 @@ export default function UploadPage() {
     }
     
     if (generationStep === 'failed') {
-      toast.error("Generation failed. Please try again with different inputs.");
+      const { error } = useAppStore.getState();
+      toast.error(error || "Generation failed. Please try again with different inputs.");
     }
   }, [generationStep, router]);
 

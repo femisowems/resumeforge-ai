@@ -41,9 +41,19 @@ Please provide the output in JSON format with three exact keys:
         contents: prompt,
       });
       
-      const text = response.text || "{}";
-      const result = JSON.parse(text);
+      const rawText = response.text || "{}";
+      this.logger.log(`Raw AI Response: ${rawText.substring(0, 500)}${rawText.length > 500 ? '...' : ''}`);
 
+      // Robust JSON extraction: handle markdown code blocks if present
+      let cleanJson = rawText.trim();
+      if (cleanJson.startsWith('```')) {
+        const match = cleanJson.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+        if (match && match[1]) {
+          cleanJson = match[1].trim();
+        }
+      }
+
+      const result = JSON.parse(cleanJson);
       this.logger.log('Gemini optimization successful.');
 
       return {
@@ -53,17 +63,18 @@ Please provide the output in JSON format with three exact keys:
       };
     } catch (error: any) {
       this.logger.error('Error calling Gemini API', error.stack);
-      if (error.status) this.logger.error(`Error Status: ${error.status}`);
-      if (error.message) this.logger.error(`Error Message: ${error.message}`);
       
-      // Log full details of the error object for debugging
-      try {
-        this.logger.error('Full Error Object:', JSON.stringify(error, null, 2));
-      } catch (e) {
-        this.logger.error('Could not stringify error object', error);
+      let errorMessage = 'Failed to generate resume optimization.';
+      
+      if (error.status === 429) {
+        errorMessage = 'Gemini API Quota Exceeded. Please try again later or switch models.';
+      } else if (error.message && error.message.includes('JSON')) {
+        errorMessage = 'AI returned an invalid response format. Please try again.';
+      } else if (error.message) {
+        errorMessage = `AI Error: ${error.message}`;
       }
-      
-      // Specialized debugging: attempt to list models to console to see what's actually available
+
+      // Specialized debugging: attempt to list models to console
       try {
         const response = await this.ai.models.list();
         this.logger.warn('Listing available Gemini models for debugging:');
@@ -74,7 +85,9 @@ Please provide the output in JSON format with three exact keys:
         this.logger.error('Failed to list models', listError);
       }
       
-      throw error;
+      const enhancedError = new Error(errorMessage);
+      (enhancedError as any).status = error.status;
+      throw enhancedError;
     }
   }
 }

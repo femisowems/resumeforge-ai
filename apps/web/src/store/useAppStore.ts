@@ -11,6 +11,7 @@ interface AppState {
   matchScore: number | null;
   generatedResumeText: string | null;
   generatedResumeId: string | null;
+  error: string | null;
   
   setResumeFile: (file: File | null) => void;
   setPastedResumeText: (text: string) => void;
@@ -30,6 +31,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   matchScore: null,
   generatedResumeText: null,
   generatedResumeId: null,
+  error: null,
 
   setResumeFile: (file) => set({ resumeFile: file }),
   setPastedResumeText: (text) => set({ pastedResumeText: text }),
@@ -38,7 +40,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const { resumeFile, pastedResumeText, jobDescription } = get();
     if (!resumeFile && !pastedResumeText.trim()) return;
 
-    set({ isGenerating: true, generationStep: 'parsing' });
+    set({ isGenerating: true, generationStep: 'parsing', error: null });
 
     try {
       const formData = new FormData();
@@ -86,10 +88,11 @@ export const useAppStore = create<AppState>((set, get) => ({
           generatedResumeText: doc.resultText,
         });
       } else if (doc && doc.status === 'failed') {
-        console.warn('Job failed on server:', jobId);
+        console.warn('Job failed on server:', jobId, doc.error);
         set({ 
           generationStep: 'failed',
-          isGenerating: false
+          isGenerating: false,
+          error: doc.error || 'Unknown error occurred'
         });
       }
     } catch (error: any) {
