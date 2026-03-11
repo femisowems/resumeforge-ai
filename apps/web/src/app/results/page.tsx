@@ -13,36 +13,37 @@ import { generateResumeFileName, NamingMetadata } from '@/lib/generateResumeFile
 // Custom components to render the AI resume text as a beautiful document.
 // Note: We use inline hex colors here instead of Tailwind classes because
 // Tailwind v4 uses lab()/oklch() which crashes html2canvas!
+// We also add pageBreakInside: avoid to prevent slicing elements across pages.
 const resumeComponents: Components = {
   h1: ({ children }) => (
-    <div className="text-center pb-6 mb-6 border-b-2" style={{ borderColor: '#e2e8f0' }}>
+    <div className="text-center pb-6 mb-6 border-b-2" style={{ borderColor: '#e2e8f0', pageBreakInside: 'avoid' }}>
       <h1 className="text-3xl font-black tracking-tight leading-tight" style={{ color: '#0f172a' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
-    <p className="text-center text-sm font-medium -mt-4 mb-6" style={{ color: '#64748b' }}>{children}</p>
+    <p className="text-center text-sm font-medium -mt-4 mb-6" style={{ color: '#64748b', pageBreakInside: 'avoid' }}>{children}</p>
   ),
   h3: ({ children }) => (
-    <div className="mt-8 mb-3">
+    <div className="mt-8 mb-3" style={{ pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
       <h3 className="text-xs font-black uppercase tracking-[0.2em] pb-1 border-b-2 inline-block" style={{ color: '#0f172a', borderColor: '#0f172a' }}>
         {children}
       </h3>
     </div>
   ),
   h4: ({ children }) => (
-    <h4 className="font-bold text-base mt-4 mb-0.5" style={{ color: '#0f172a' }}>{children}</h4>
+    <h4 className="font-bold text-base mt-4 mb-0.5" style={{ color: '#0f172a', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>{children}</h4>
   ),
   p: ({ children }) => (
-    <p className="text-sm leading-relaxed mb-3" style={{ color: '#475569' }}>{children}</p>
+    <p className="text-sm leading-relaxed mb-3" style={{ color: '#475569', pageBreakInside: 'avoid' }}>{children}</p>
   ),
   ul: ({ children }) => (
-    <ul className="list-disc list-outside ml-5 space-y-1.5 mb-4" style={{ color: '#475569' }}>{children}</ul>
+    <ul className="list-disc list-outside ml-5 space-y-1.5 mb-4" style={{ color: '#475569', pageBreakInside: 'auto' }}>{children}</ul>
   ),
   li: ({ children }) => (
-    <li className="text-sm leading-relaxed" style={{ color: '#475569' }}>{children}</li>
+    <li className="text-sm leading-relaxed" style={{ color: '#475569', pageBreakInside: 'avoid' }}>{children}</li>
   ),
   ol: ({ children }) => (
-    <ol className="list-decimal list-outside ml-5 space-y-1.5 mb-4" style={{ color: '#475569' }}>{children}</ol>
+    <ol className="list-decimal list-outside ml-5 space-y-1.5 mb-4" style={{ color: '#475569', pageBreakInside: 'auto' }}>{children}</ol>
   ),
   strong: ({ children }) => (
     <strong className="font-bold" style={{ color: '#0f172a' }}>{children}</strong>
@@ -107,31 +108,18 @@ export default function ResultsPage() {
         setDownloading(true);
         try {
           if (!resumeRef.current) throw new Error("Resume reference not available");
-          const html2canvas = (await import('html2canvas')).default;
-          const jsPDF = (await import('jspdf')).default;
+          const html2pdf = (await import('html2pdf.js')).default;
 
-          const canvas = await html2canvas(resumeRef.current, {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: '#ffffff',
-          });
+          const opt = {
+            margin:       0.75, // 0.75 inches for formal resume margins
+            filename:     previewFilename,
+            image:        { type: 'jpeg' as const, quality: 1 },
+            html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF:        { unit: 'in' as const, format: 'letter' as const, orientation: 'portrait' as const },
+            pagebreak:    { mode: 'css', avoid: ['h1', 'h2', 'h3', 'h4', 'p', 'li', 'ul'] }
+          };
 
-          const imgData = canvas.toDataURL('image/png');
-          const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-          const pageW = pdf.internal.pageSize.getWidth();
-          const pageH = pdf.internal.pageSize.getHeight();
-          const imgW = pageW;
-          const imgH = (canvas.height * pageW) / canvas.width;
-          let y = 0;
-
-          // Handle multi-page if content is taller than A4
-          while (y < imgH) {
-            pdf.addImage(imgData, 'PNG', 0, -y, imgW, imgH);
-            y += pageH;
-            if (y < imgH) pdf.addPage();
-          }
-
-          pdf.save(previewFilename);
+          await html2pdf().from(resumeRef.current).set(opt).save();
         } finally {
           setDownloading(false);
         }
@@ -217,7 +205,7 @@ export default function ResultsPage() {
             <div className="absolute inset-x-2 bottom-0 top-2 bg-slate-200 rounded-2xl opacity-40" />
             
             {/* Main paper */}
-            <div className="relative bg-white rounded-2xl shadow-2xl shadow-black/30 overflow-hidden border border-slate-100">
+            <div ref={resumeRef} className="bg-white rounded-xl shadow-2xl p-8 sm:p-12 md:p-16 max-w-[816px] mx-auto overflow-hidden ring-1 ring-slate-900/5 min-h-[1056px]">
               {/* Top Toolbar Bar */}
               <div className="flex items-center justify-between px-6 py-3 bg-slate-50 border-b border-slate-200">
                 <div className="flex items-center gap-2 text-slate-500">
