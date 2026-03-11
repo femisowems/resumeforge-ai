@@ -30,28 +30,27 @@ ResumeForge AI analyzes your existing resume alongside any job description and p
 
 ### What You Need First
 
-- [Ruby 3.x](https://www.ruby-lang.org) — for the backend server
-- [Node.js 18+](https://nodejs.org) — for the frontend
+- [Node.js 18+](https://nodejs.org) — for the monorepo workspace
 - [PostgreSQL](https://www.postgresql.org) — the database
+- [Redis](https://redis.io) — for BullMQ background jobs
 
-### 1. Set Up the Backend (Server)
-
-```bash
-cd backend
-bundle install        # Install dependencies
-rails db:setup        # Create and seed the database
-rails server          # Start the server on http://localhost:3000
-```
-
-### 2. Set Up the Frontend (App)
+### 1. Install Dependencies
 
 ```bash
-cd frontend
-npm install           # Install dependencies
-npm run dev           # Start the app on http://localhost:5173
+# This installs dependencies for the root, api, web, and shared types workspaces all at once
+npm install
 ```
 
-Then open **http://localhost:5173** in your browser and you're ready to go!
+### 2. Start the Application
+
+```bash
+# Starts both the NestJS API and Next.js frontend concurrently
+# API will run on http://localhost:3001
+# Web will run on http://localhost:3000
+npm run dev
+```
+
+Then open **http://localhost:3000** in your browser and you're ready to go!
 
 ---
 
@@ -59,8 +58,12 @@ Then open **http://localhost:5173** in your browser and you're ready to go!
 
 ```
 resumeforge-ai/
-├── backend/     # Rails API server — handles file parsing, AI processing & data
-└── frontend/    # React web app — the interface you see and interact with
+├── apps/
+│   ├── web/        # Next.js 14 frontend — React, TailwindCSS, Zustand
+│   └── api/        # NestJS backend — Auth, BullMQ queues, Gemini AI integration
+├── packages/
+│   └── types/      # Shared TypeScript types for full-stack consistency
+└── package.json    # Root npm workspace commands
 ```
 
 ---
