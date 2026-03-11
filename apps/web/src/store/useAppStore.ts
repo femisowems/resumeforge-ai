@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import { api } from '../lib/api';
 
 interface AppState {
   resumeFile: File | null;
@@ -40,10 +41,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       formData.append('resume', resumeFile);
       formData.append('jobDescription', jobDescription);
 
-      // Using the backend API URL
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      
-      const response = await axios.post(`${API_URL}/resumes/upload`, formData, {
+      // Using the centralized backend API URL
+      const response = await axios.post(api('resumes/upload'), formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -67,8 +66,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   
   pollJobStatus: async (jobId: string) => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-      const response = await axios.get(`${API_URL}/documents/${jobId}`);
+      const response = await axios.get(api(`documents/${jobId}`));
       
       const doc = response.data;
       if (doc && doc.status === 'completed') {
