@@ -34,15 +34,21 @@ export default function ProcessingPage() {
   return (
     <div className="pt-32 pb-20 px-6 min-h-screen bg-slate-950 font-inter flex flex-col items-center justify-center">
       <div className="text-center space-y-8 animate-in fade-in duration-700">
-        <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
-          <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-xl animate-pulse" />
-          <Loader2 className="w-16 h-16 text-indigo-500 animate-spin" />
+        
+        {/* Animated Bicycle Girl Illustration */}
+        <div className="relative w-48 h-48 mx-auto flex items-center justify-center animate-[bounce_2s_infinite]">
+          <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-2xl animate-pulse" />
+          <img 
+            src="/animated_bicycle_girl.png" 
+            alt="AI is working..." 
+            className="w-full h-full object-contain relative z-10 rounded-full scale-110 shadow-2xl shadow-indigo-500/30"
+          />
         </div>
         
         <div className="space-y-4">
           <h2 className="text-3xl font-bold font-outfit text-white">Forging Your Resume</h2>
           <p className="text-slate-400 max-w-md mx-auto">
-            Our AI is analyzing the job description and optimizing your resume for maximum impact. This usually takes 10-30 seconds.
+            Our AI is pedaling hard to analyze the job description and optimize your resume for maximum impact. This usually takes 10-30 seconds.
           </p>
         </div>
 

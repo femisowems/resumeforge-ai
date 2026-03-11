@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { DocumentsService } from '../documents/documents.service';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class GenerationService {
   ) {}
 
   async queueGeneration(resumeText: string, jobDescription: string) {
-    const jobId = uuidv4();
+    const jobId = randomUUID();
 
     this.documentsService.saveDocument(jobId, {
       id: jobId,
