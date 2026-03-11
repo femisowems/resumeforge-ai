@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAppStore } from '@/store/useAppStore';
-import { Download, Copy, RefreshCw, Check, ArrowLeft, Star, Target, FileText, Loader2 } from 'lucide-react';
+import { Download, Copy, RefreshCw, Check, ArrowLeft, Star, Target, FileText, Loader2, Palette } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
@@ -16,36 +16,83 @@ import { saveAs } from 'file-saver';
 // Note: We use inline hex colors here instead of Tailwind classes because
 // Tailwind v4 uses lab()/oklch() which crashes html2canvas!
 // We also add pageBreakInside: avoid to prevent slicing elements across pages.
-const resumeComponents: Components = {
+const classicTemplate: Components = {
   h1: ({ children }) => (
-    <div className="text-center pb-6 mb-6 border-b-2" style={{ borderColor: '#e2e8f0', pageBreakInside: 'avoid' }}>
-      <h1 className="text-3xl font-black tracking-tight leading-tight" style={{ color: '#0f172a' }}>{children}</h1>
+    <div className="text-center pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
+      <h1 className="text-3xl font-bold tracking-tight" style={{ color: '#0f172a' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
-    <p className="text-center text-sm font-medium -mt-4 mb-6" style={{ color: '#64748b', pageBreakInside: 'avoid' }}>{children}</p>
+    <p className="text-center text-[13px] font-medium mb-6" style={{ color: '#64748b', pageBreakInside: 'avoid' }}>{children}</p>
   ),
   h3: ({ children }) => (
-    <div className="mt-8 mb-3" style={{ pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
-      <h3 className="text-xs font-black uppercase tracking-[0.2em] pb-1 border-b-2 inline-block" style={{ color: '#0f172a', borderColor: '#0f172a' }}>
+    <div className="mt-8 mb-3 border-b-2" style={{ borderColor: '#e2e8f0', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
+      <h3 className="text-sm font-bold uppercase tracking-widest pb-1" style={{ color: '#0f172a' }}>
         {children}
       </h3>
     </div>
   ),
   h4: ({ children }) => (
-    <h4 className="font-bold text-base mt-4 mb-0.5" style={{ color: '#0f172a', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>{children}</h4>
+    <h4 className="font-semibold text-[15px] mt-4 mb-1" style={{ color: '#1e293b', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>{children}</h4>
   ),
   p: ({ children }) => (
-    <p className="text-sm leading-relaxed mb-3" style={{ color: '#475569', pageBreakInside: 'avoid' }}>{children}</p>
+    <p className="text-[13px] leading-relaxed mb-3" style={{ color: '#334155', pageBreakInside: 'avoid' }}>{children}</p>
   ),
   ul: ({ children }) => (
-    <ul className="list-disc list-outside ml-5 space-y-1.5 mb-4" style={{ color: '#475569', pageBreakInside: 'auto' }}>{children}</ul>
+    <ul className="list-disc list-outside ml-4 space-y-1 mb-4" style={{ color: '#334155', pageBreakInside: 'auto' }}>{children}</ul>
   ),
   li: ({ children }) => (
-    <li className="text-sm leading-relaxed" style={{ color: '#475569', pageBreakInside: 'avoid' }}>{children}</li>
+    <li className="text-[13px] leading-relaxed" style={{ color: '#334155', pageBreakInside: 'avoid' }}>{children}</li>
   ),
   ol: ({ children }) => (
-    <ol className="list-decimal list-outside ml-5 space-y-1.5 mb-4" style={{ color: '#475569', pageBreakInside: 'auto' }}>{children}</ol>
+    <ol className="list-decimal list-outside ml-4 space-y-1 mb-4" style={{ color: '#334155', pageBreakInside: 'auto' }}>{children}</ol>
+  ),
+  strong: ({ children }) => (
+    <strong className="font-semibold" style={{ color: '#0f172a' }}>{children}</strong>
+  ),
+  em: ({ children }) => (
+    <em className="not-italic font-medium" style={{ color: '#475569' }}>{children}</em>
+  ),
+  hr: () => (
+    <hr className="border-t my-5" style={{ borderColor: '#e2e8f0' }} />
+  ),
+  a: ({ href, children }) => (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="font-medium hover:underline text-indigo-600" style={{ color: '#4f46e5' }}>
+      {children}
+    </a>
+  ),
+};
+
+const modernTemplate: Components = {
+  h1: ({ children }) => (
+    <div className="pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
+      <h1 className="text-4xl font-black tracking-tighter" style={{ color: '#0ea5e9', fontFamily: 'sans-serif' }}>{children}</h1>
+    </div>
+  ),
+  h2: ({ children }) => (
+    <p className="text-[14px] font-bold mb-6 uppercase tracking-wider" style={{ color: '#94a3b8', pageBreakInside: 'avoid' }}>{children}</p>
+  ),
+  h3: ({ children }) => (
+    <div className="mt-8 mb-4 border-l-4 pl-3" style={{ borderColor: '#0ea5e9', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
+      <h3 className="text-lg font-bold" style={{ color: '#0f172a' }}>
+        {children}
+      </h3>
+    </div>
+  ),
+  h4: ({ children }) => (
+    <h4 className="font-bold text-[15px] mt-4 mb-1" style={{ color: '#0f172a', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>{children}</h4>
+  ),
+  p: ({ children }) => (
+    <p className="text-[13.5px] leading-relaxed mb-3" style={{ color: '#475569', pageBreakInside: 'avoid' }}>{children}</p>
+  ),
+  ul: ({ children }) => (
+    <ul className="list-disc list-outside ml-4 space-y-1.5 mb-4" style={{ color: '#475569', pageBreakInside: 'auto' }}>{children}</ul>
+  ),
+  li: ({ children }) => (
+    <li className="text-[13.5px] leading-relaxed" style={{ color: '#475569', pageBreakInside: 'avoid' }}>{children}</li>
+  ),
+  ol: ({ children }) => (
+    <ol className="list-decimal list-outside ml-4 space-y-1.5 mb-4" style={{ color: '#475569', pageBreakInside: 'auto' }}>{children}</ol>
   ),
   strong: ({ children }) => (
     <strong className="font-bold" style={{ color: '#0f172a' }}>{children}</strong>
@@ -54,14 +101,115 @@ const resumeComponents: Components = {
     <em className="not-italic font-medium" style={{ color: '#64748b' }}>{children}</em>
   ),
   hr: () => (
-    <hr className="border-t my-6" style={{ borderColor: '#f1f5f9' }} />
+    <hr className="border-t-2 my-5" style={{ borderColor: '#f1f5f9' }} />
   ),
   a: ({ href, children }) => (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="font-medium hover:underline" style={{ color: '#4f46e5' }}>
+    <a href={href} target="_blank" rel="noopener noreferrer" className="font-semibold hover:underline" style={{ color: '#0ea5e9' }}>
       {children}
     </a>
   ),
 };
+
+const minimalistTemplate: Components = {
+  h1: ({ children }) => (
+    <div className="pb-1 mb-1" style={{ pageBreakInside: 'avoid' }}>
+      <h1 className="text-2xl font-normal tracking-wide" style={{ color: '#333333' }}>{children}</h1>
+    </div>
+  ),
+  h2: ({ children }) => (
+    <p className="text-[12px] mb-8" style={{ color: '#666666', pageBreakInside: 'avoid' }}>{children}</p>
+  ),
+  h3: ({ children }) => (
+    <div className="mt-8 mb-3" style={{ pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
+      <h3 className="text-xs font-semibold uppercase tracking-[0.3em] pb-2 border-b" style={{ color: '#333333', borderColor: '#eaeaea' }}>
+        {children}
+      </h3>
+    </div>
+  ),
+  h4: ({ children }) => (
+    <h4 className="font-medium text-[14px] mt-4 mb-1" style={{ color: '#333333', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>{children}</h4>
+  ),
+  p: ({ children }) => (
+    <p className="text-[13px] leading-loose mb-3" style={{ color: '#555555', pageBreakInside: 'avoid' }}>{children}</p>
+  ),
+  ul: ({ children }) => (
+    <ul className="list-disc list-outside ml-4 space-y-2 mb-4" style={{ color: '#555555', pageBreakInside: 'auto' }}>{children}</ul>
+  ),
+  li: ({ children }) => (
+    <li className="text-[13px] leading-loose" style={{ color: '#555555', pageBreakInside: 'avoid' }}>{children}</li>
+  ),
+  ol: ({ children }) => (
+    <ol className="list-decimal list-outside ml-4 space-y-2 mb-4" style={{ color: '#555555', pageBreakInside: 'auto' }}>{children}</ol>
+  ),
+  strong: ({ children }) => (
+    <strong className="font-semibold" style={{ color: '#111111' }}>{children}</strong>
+  ),
+  em: ({ children }) => (
+    <em className="not-italic" style={{ color: '#777777' }}>{children}</em>
+  ),
+  hr: () => (
+    <hr className="border-t my-6" style={{ borderColor: '#eaeaea' }} />
+  ),
+  a: ({ href, children }) => (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="border-b" style={{ color: '#333333', borderColor: '#cccccc' }}>
+      {children}
+    </a>
+  ),
+};
+
+const executiveTemplate: Components = {
+  h1: ({ children }) => (
+    <div className="text-center pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
+      <h1 className="text-3xl font-bold font-serif" style={{ color: '#000000', fontFamily: 'serif' }}>{children}</h1>
+    </div>
+  ),
+  h2: ({ children }) => (
+    <p className="text-center text-[13px] font-serif mb-6" style={{ color: '#333333', fontFamily: 'serif', pageBreakInside: 'avoid' }}>{children}</p>
+  ),
+  h3: ({ children }) => (
+    <div className="mt-8 mb-3 border-b-[3px]" style={{ borderColor: '#000000', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
+      <h3 className="text-sm font-bold font-sans uppercase tracking-widest pb-1" style={{ color: '#000000' }}>
+        {children}
+      </h3>
+    </div>
+  ),
+  h4: ({ children }) => (
+    <h4 className="font-bold font-serif text-[15px] mt-4 mb-1" style={{ color: '#000000', fontFamily: 'serif', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>{children}</h4>
+  ),
+  p: ({ children }) => (
+    <p className="text-[13px] font-serif leading-relaxed mb-3" style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'avoid' }}>{children}</p>
+  ),
+  ul: ({ children }) => (
+    <ul className="list-disc list-outside ml-4 space-y-1 mb-4" style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'auto' }}>{children}</ul>
+  ),
+  li: ({ children }) => (
+    <li className="text-[13px] font-serif leading-relaxed" style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'avoid' }}>{children}</li>
+  ),
+  ol: ({ children }) => (
+    <ol className="list-decimal list-outside ml-4 space-y-1 mb-4" style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'auto' }}>{children}</ol>
+  ),
+  strong: ({ children }) => (
+    <strong className="font-bold" style={{ color: '#000000' }}>{children}</strong>
+  ),
+  em: ({ children }) => (
+    <em className="italic" style={{ color: '#333333' }}>{children}</em>
+  ),
+  hr: () => (
+    <hr className="border-t-[3px] my-5" style={{ borderColor: '#000000' }} />
+  ),
+  a: ({ href, children }) => (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="font-semibold underline" style={{ color: '#000000' }}>
+      {children}
+    </a>
+  ),
+};
+
+const TEMPLATES = [
+  { id: 'classic', name: 'Classic', components: classicTemplate },
+  { id: 'modern', name: 'Modern', components: modernTemplate },
+  { id: 'minimalist', name: 'Minimalist', components: minimalistTemplate },
+  { id: 'executive', name: 'Executive', components: executiveTemplate }
+];
 
 export default function ResultsPage() {
   const router = useRouter();
@@ -71,7 +219,10 @@ export default function ResultsPage() {
   const [downloadPdfSuccess, setDownloadPdfSuccess] = React.useState(false);
   const [downloadDocxSuccess, setDownloadDocxSuccess] = React.useState(false);
   const [showConfirmModal, setShowConfirmModal] = React.useState(false);
+  const [activeTemplateIndex, setActiveTemplateIndex] = React.useState(0);
   const resumeRef = React.useRef<HTMLDivElement>(null);
+
+  const activeTemplate = TEMPLATES[activeTemplateIndex];
 
   const namingMetadata = React.useMemo<NamingMetadata>(() => {
     let name: string | undefined = undefined;
@@ -129,8 +280,9 @@ export default function ResultsPage() {
           // Lazy load html2pdf
           const html2pdf = (await import('html2pdf.js')).default;
 
+// ...
           const opt = {
-            margin:       0.5, // slightly smaller margin
+            margin:       0.4, // even smaller margin for wider text
             filename:     previewFilename || 'resume.pdf',
             image:        { type: 'jpeg' as const, quality: 0.98 },
             html2canvas:  { 
@@ -140,7 +292,7 @@ export default function ResultsPage() {
               logging: true, // Enable logging for debugging
             },
             jsPDF:        { unit: 'in' as const, format: 'letter' as const, orientation: 'portrait' as const },
-            pagebreak:    { mode: 'css' }
+            pagebreak:    { mode: ['css', 'legacy'] }
           };
 
           const worker = html2pdf().from(resumeRef.current).set(opt);
@@ -314,26 +466,35 @@ export default function ResultsPage() {
             <div className="absolute inset-x-2 bottom-0 top-2 bg-slate-200 rounded-2xl opacity-40" />
             
             {/* Main paper */}
-            <div className="bg-white rounded-xl shadow-2xl p-8 sm:p-12 md:p-16 max-w-[816px] mx-auto overflow-hidden ring-1 ring-slate-900/5 min-h-[1056px]">
+            <div className="relative z-10 bg-white rounded-xl shadow-2xl max-w-[816px] mx-auto overflow-hidden ring-1 ring-slate-900/5 min-h-[1056px] flex flex-col">
               {/* Top Toolbar Bar */}
               <div className="flex items-center justify-between px-6 py-3 bg-slate-50 border-b border-slate-200">
                 <div className="flex items-center gap-2 text-slate-500">
                   <FileText className="w-4 h-4" />
                   <span className="text-xs font-semibold">AI Optimized Resume</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                  <div className="w-3 h-3 rounded-full bg-green-400" />
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setActiveTemplateIndex((prev) => (prev + 1) % TEMPLATES.length)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-50 border border-indigo-200 text-xs font-bold text-indigo-700 hover:bg-indigo-100 hover:border-indigo-300 transition-colors shadow-sm active:scale-95 relative z-10"
+                  >
+                    <Palette className="w-3.5 h-3.5" />
+                    Template: {activeTemplate.name}
+                  </button>
+                  <div className="flex items-center gap-1.5 ml-2">
+                    <div className="w-3 h-3 rounded-full bg-red-400" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                    <div className="w-3 h-3 rounded-full bg-green-400" />
+                  </div>
                 </div>
               </div>
 
               {/* Resume content — this div is captured for PDF export */}
-              <div ref={resumeRef} className="px-14 py-10 min-h-[900px]" style={{ backgroundColor: '#ffffff', color: '#0f172a' }}>
+              <div ref={resumeRef} className="px-4 py-8 sm:px-8 sm:py-10 flex-1" style={{ backgroundColor: '#ffffff', color: '#0f172a' }}>
                 {generatedResumeText ? (
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
-                    components={resumeComponents}
+                    components={activeTemplate.components}
                   >
                     {generatedResumeText}
                   </ReactMarkdown>
