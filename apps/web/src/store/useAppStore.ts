@@ -18,6 +18,7 @@ interface AppState {
   setJobDescription: (jd: string) => void;
   startGeneration: () => Promise<void>;
   pollJobStatus: (jobId: string) => Promise<void>;
+  setGeneratedResumeText: (text: string) => void;
   setGenerationStep: (step: AppState['generationStep']) => void;
   reset: () => void;
 }
@@ -36,6 +37,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   setResumeFile: (file) => set({ resumeFile: file }),
   setPastedResumeText: (text) => set({ pastedResumeText: text }),
   setJobDescription: (jd) => set({ jobDescription: jd }),
+  setGeneratedResumeText: (text) => set({ generatedResumeText: text }),
   startGeneration: async () => {
     const { resumeFile, pastedResumeText, jobDescription } = get();
     if (!resumeFile && !pastedResumeText.trim()) return;

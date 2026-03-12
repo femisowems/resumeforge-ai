@@ -17,34 +17,34 @@ import rehypeRaw from 'rehype-raw';
 // Custom components to render the AI resume text as a beautiful document.
 const classicTemplate: Components = {
   h1: ({ children }) => (
-    <div className="text-center pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
+    <div className="text-center pb-3 mb-3" style={{ pageBreakInside: 'avoid' }}>
       <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#0f172a' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
-    <p className="text-center text-[13px] font-medium mb-6" style={{ color: '#64748b', pageBreakInside: 'avoid' }}>{children}</p>
+    <p className="text-center text-[13px] font-medium mb-8" style={{ color: '#64748b', pageBreakInside: 'avoid' }}>{children}</p>
   ),
   h3: ({ children, className, ...props }) => (
-    <div className="mt-8 mb-3 border-b-2" style={{ borderColor: '#e2e8f0', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
-      <h3 {...props} className={`text-sm font-bold uppercase tracking-widest pb-1 ${className || ''}`} style={{ color: '#0f172a', ...props.style }}>
+    <div className="mt-10 mb-4 border-b-2" style={{ borderColor: '#e2e8f0', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
+      <h3 {...props} className={`text-sm font-bold uppercase tracking-widest pb-1.5 ${className || ''}`} style={{ color: '#0f172a', ...props.style }}>
         {children}
       </h3>
     </div>
   ),
   h4: ({ children, className, ...props }) => (
-    <h4 {...props} className={`font-semibold text-[15px] mt-4 mb-1 ${className || ''}`} style={{ color: '#1e293b', pageBreakInside: 'avoid', pageBreakAfter: 'avoid', ...props.style }}>{children}</h4>
+    <h4 {...props} className={`font-semibold text-[15px] mt-6 mb-2 ${className || ''}`} style={{ color: '#1e293b', pageBreakInside: 'avoid', pageBreakAfter: 'avoid', ...props.style }}>{children}</h4>
   ),
   p: ({ children, className, ...props }) => (
-    <p {...props} className={`text-[13px] leading-relaxed mb-3 ${className || ''}`} style={{ color: '#334155', pageBreakInside: 'avoid', ...props.style }}>{children}</p>
+    <p {...props} className={`text-[13px] leading-[1.7] mb-4 ${className || ''}`} style={{ color: '#334155', pageBreakInside: 'avoid', ...props.style }}>{children}</p>
   ),
   ul: ({ children, className, ...props }) => (
-    <ul {...props} className={`list-disc list-outside ml-4 space-y-1 mb-4 ${className || ''}`} style={{ color: '#334155', pageBreakInside: 'auto', ...props.style }}>{children}</ul>
+    <ul {...props} className={`list-disc list-outside ml-4 space-y-2.5 mb-6 ${className || ''}`} style={{ color: '#334155', pageBreakInside: 'auto', ...props.style }}>{children}</ul>
   ),
   li: ({ children, className, ...props }) => (
-    <li {...props} className={`text-[13px] leading-relaxed ${className || ''}`} style={{ color: '#334155', pageBreakInside: 'avoid', ...props.style }}>{children}</li>
+    <li {...props} className={`text-[13px] leading-[1.7] ${className || ''}`} style={{ color: '#334155', pageBreakInside: 'avoid', ...props.style }}>{children}</li>
   ),
   ol: ({ children, className, ...props }) => (
-    <ol {...props} className={`list-decimal list-outside ml-4 space-y-1 mb-4 ${className || ''}`} style={{ color: '#334155', pageBreakInside: 'auto', ...props.style }}>{children}</ol>
+    <ol {...props} className={`list-decimal list-outside ml-4 space-y-2.5 mb-6 ${className || ''}`} style={{ color: '#334155', pageBreakInside: 'auto', ...props.style }}>{children}</ol>
   ),
   strong: ({ children, style, className, ...props }) => (
     <strong {...props} className={`font-semibold ${className || ''}`} style={{ color: '#0f172a', ...style }}>{children}</strong>
@@ -74,34 +74,34 @@ const classicTemplate: Components = {
 
 const modernTemplate: Components = {
   h1: ({ children }) => (
-    <div className="pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
+    <div className="pb-3 mb-3" style={{ pageBreakInside: 'avoid' }}>
       <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#0ea5e9', fontFamily: 'sans-serif' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
-    <p className="text-[14px] font-bold mb-6 uppercase tracking-wider" style={{ color: '#94a3b8', pageBreakInside: 'avoid' }}>{children}</p>
+    <p className="text-[14px] font-bold mb-8 uppercase tracking-wider" style={{ color: '#94a3b8', pageBreakInside: 'avoid' }}>{children}</p>
   ),
   h3: ({ children, className, ...props }) => (
-    <div className="mt-8 mb-4 border-l-4 pl-3" style={{ borderColor: '#0ea5e9', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
+    <div className="mt-10 mb-5 border-l-4 pl-3" style={{ borderColor: '#0ea5e9', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
       <h3 {...props} className={`text-lg font-bold ${className || ''}`} style={{ color: '#0f172a', ...props.style }}>
         {children}
       </h3>
     </div>
   ),
   h4: ({ children, className, ...props }) => (
-    <h4 {...props} className={`font-bold text-[15px] mt-4 mb-1 ${className || ''}`} style={{ color: '#0f172a', pageBreakInside: 'avoid', pageBreakAfter: 'avoid', ...props.style }}>{children}</h4>
+    <h4 {...props} className={`font-bold text-[15px] mt-6 mb-2 ${className || ''}`} style={{ color: '#0f172a', pageBreakInside: 'avoid', pageBreakAfter: 'avoid', ...props.style }}>{children}</h4>
   ),
   p: ({ children, className, ...props }) => (
-    <p {...props} className={`text-[13.5px] leading-relaxed mb-3 ${className || ''}`} style={{ color: '#475569', pageBreakInside: 'avoid', ...props.style }}>{children}</p>
+    <p {...props} className={`text-[13.5px] leading-[1.8] mb-4 ${className || ''}`} style={{ color: '#475569', pageBreakInside: 'avoid', ...props.style }}>{children}</p>
   ),
   ul: ({ children, className, ...props }) => (
-    <ul {...props} className={`list-disc list-outside ml-4 space-y-1.5 mb-4 ${className || ''}`} style={{ color: '#475569', pageBreakInside: 'auto', ...props.style }}>{children}</ul>
+    <ul {...props} className={`list-disc list-outside ml-4 space-y-2.5 mb-6 ${className || ''}`} style={{ color: '#475569', pageBreakInside: 'auto', ...props.style }}>{children}</ul>
   ),
   li: ({ children, className, ...props }) => (
-    <li {...props} className={`text-[13.5px] leading-relaxed ${className || ''}`} style={{ color: '#475569', pageBreakInside: 'avoid', ...props.style }}>{children}</li>
+    <li {...props} className={`text-[13.5px] leading-[1.8] ${className || ''}`} style={{ color: '#475569', pageBreakInside: 'avoid', ...props.style }}>{children}</li>
   ),
   ol: ({ children, className, ...props }) => (
-    <ol {...props} className={`list-decimal list-outside ml-4 space-y-1.5 mb-4 ${className || ''}`} style={{ color: '#475569', pageBreakInside: 'auto', ...props.style }}>{children}</ol>
+    <ol {...props} className={`list-decimal list-outside ml-4 space-y-2.5 mb-6 ${className || ''}`} style={{ color: '#475569', pageBreakInside: 'auto', ...props.style }}>{children}</ol>
   ),
   strong: ({ children }) => (
     <strong className="font-bold" style={{ color: '#0f172a' }}>{children}</strong>
@@ -131,34 +131,34 @@ const modernTemplate: Components = {
 
 const minimalistTemplate: Components = {
   h1: ({ children }) => (
-    <div className="pb-1 mb-1" style={{ pageBreakInside: 'avoid' }}>
+    <div className="pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
       <h1 className="text-xl font-bold tracking-wide" style={{ color: '#333333' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
-    <p className="text-[12px] mb-8" style={{ color: '#666666', pageBreakInside: 'avoid' }}>{children}</p>
+    <p className="text-[12px] mb-10" style={{ color: '#666666', pageBreakInside: 'avoid' }}>{children}</p>
   ),
   h3: ({ children, className, ...props }) => (
-    <div className="mt-8 mb-3" style={{ pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
-      <h3 {...props} className={`text-xs font-semibold uppercase tracking-[0.3em] pb-2 border-b ${className || ''}`} style={{ color: '#333333', borderColor: '#eaeaea', ...props.style }}>
+    <div className="mt-10 mb-5" style={{ pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
+      <h3 {...props} className={`text-xs font-semibold uppercase tracking-[0.3em] pb-3 border-b ${className || ''}`} style={{ color: '#333333', borderColor: '#eaeaea', ...props.style }}>
         {children}
       </h3>
     </div>
   ),
   h4: ({ children, className, ...props }) => (
-    <h4 {...props} className={`font-medium text-[14px] mt-4 mb-1 ${className || ''}`} style={{ color: '#333333', pageBreakInside: 'avoid', pageBreakAfter: 'avoid', ...props.style }}>{children}</h4>
+    <h4 {...props} className={`font-medium text-[14px] mt-6 mb-2 ${className || ''}`} style={{ color: '#333333', pageBreakInside: 'avoid', pageBreakAfter: 'avoid', ...props.style }}>{children}</h4>
   ),
   p: ({ children, className, ...props }) => (
-    <p {...props} className={`text-[13px] leading-loose mb-3 ${className || ''}`} style={{ color: '#555555', pageBreakInside: 'avoid', ...props.style }}>{children}</p>
+    <p {...props} className={`text-[13px] leading-[2] mb-4 ${className || ''}`} style={{ color: '#555555', pageBreakInside: 'avoid', ...props.style }}>{children}</p>
   ),
   ul: ({ children, className, ...props }) => (
-    <ul {...props} className={`list-disc list-outside ml-4 space-y-2 mb-4 ${className || ''}`} style={{ color: '#555555', pageBreakInside: 'auto', ...props.style }}>{children}</ul>
+    <ul {...props} className={`list-disc list-outside ml-4 space-y-3 mb-6 ${className || ''}`} style={{ color: '#555555', pageBreakInside: 'auto', ...props.style }}>{children}</ul>
   ),
   li: ({ children, className, ...props }) => (
-    <li {...props} className={`text-[13px] leading-loose ${className || ''}`} style={{ color: '#555555', pageBreakInside: 'avoid', ...props.style }}>{children}</li>
+    <li {...props} className={`text-[13px] leading-[2] ${className || ''}`} style={{ color: '#555555', pageBreakInside: 'avoid', ...props.style }}>{children}</li>
   ),
   ol: ({ children, className, ...props }) => (
-    <ol {...props} className={`list-decimal list-outside ml-4 space-y-2 mb-4 ${className || ''}`} style={{ color: '#555555', pageBreakInside: 'auto', ...props.style }}>{children}</ol>
+    <ol {...props} className={`list-decimal list-outside ml-4 space-y-3 mb-6 ${className || ''}`} style={{ color: '#555555', pageBreakInside: 'auto', ...props.style }}>{children}</ol>
   ),
   strong: ({ children }) => (
     <strong className="font-semibold" style={{ color: '#111111' }}>{children}</strong>
@@ -188,34 +188,34 @@ const minimalistTemplate: Components = {
 
 const executiveTemplate: Components = {
   h1: ({ children }) => (
-    <div className="text-center pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
+    <div className="text-center pb-3 mb-3" style={{ pageBreakInside: 'avoid' }}>
       <h1 className="text-2xl font-bold font-serif" style={{ color: '#000000', fontFamily: 'serif' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
-    <p className="text-center text-[13px] font-serif mb-6" style={{ color: '#333333', fontFamily: 'serif', pageBreakInside: 'avoid' }}>{children}</p>
+    <p className="text-center text-[13px] font-serif mb-8" style={{ color: '#333333', fontFamily: 'serif', pageBreakInside: 'avoid' }}>{children}</p>
   ),
   h3: ({ children, className, ...props }) => (
-    <div className="mt-8 mb-3 border-b-[3px]" style={{ borderColor: '#000000', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
-      <h3 {...props} className={`text-sm font-bold font-sans uppercase tracking-widest pb-1 ${className || ''}`} style={{ color: '#000000', ...props.style }}>
+    <div className="mt-10 mb-4 border-b-[3px]" style={{ borderColor: '#000000', pageBreakInside: 'avoid', pageBreakAfter: 'avoid' }}>
+      <h3 {...props} className={`text-sm font-bold font-sans uppercase tracking-widest pb-2 ${className || ''}`} style={{ color: '#000000', ...props.style }}>
         {children}
       </h3>
     </div>
   ),
   h4: ({ children, className, ...props }) => (
-    <h4 {...props} className={`font-bold font-serif text-[15px] mt-4 mb-1 ${className || ''}`} style={{ color: '#000000', fontFamily: 'serif', pageBreakInside: 'avoid', pageBreakAfter: 'avoid', ...props.style }}>{children}</h4>
+    <h4 {...props} className={`font-bold font-serif text-[15px] mt-6 mb-2 ${className || ''}`} style={{ color: '#000000', fontFamily: 'serif', pageBreakInside: 'avoid', pageBreakAfter: 'avoid', ...props.style }}>{children}</h4>
   ),
   p: ({ children, className, ...props }) => (
-    <p {...props} className={`text-[13px] font-serif leading-relaxed mb-3 ${className || ''}`} style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'avoid', ...props.style }}>{children}</p>
+    <p {...props} className={`text-[13px] font-serif leading-[1.75] mb-4 ${className || ''}`} style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'avoid', ...props.style }}>{children}</p>
   ),
   ul: ({ children, className, ...props }) => (
-    <ul {...props} className={`list-disc list-outside ml-4 space-y-1 mb-4 ${className || ''}`} style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'auto', ...props.style }}>{children}</ul>
+    <ul {...props} className={`list-disc list-outside ml-4 space-y-2.5 mb-6 ${className || ''}`} style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'auto', ...props.style }}>{children}</ul>
   ),
   li: ({ children, className, ...props }) => (
-    <li {...props} className={`text-[13px] font-serif leading-relaxed ${className || ''}`} style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'avoid', ...props.style }}>{children}</li>
+    <li {...props} className={`text-[13px] font-serif leading-[1.75] ${className || ''}`} style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'avoid', ...props.style }}>{children}</li>
   ),
   ol: ({ children, className, ...props }) => (
-    <ol {...props} className={`list-decimal list-outside ml-4 space-y-1 mb-4 ${className || ''}`} style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'auto', ...props.style }}>{children}</ol>
+    <ol {...props} className={`list-decimal list-outside ml-4 space-y-2.5 mb-6 ${className || ''}`} style={{ color: '#111111', fontFamily: 'serif', pageBreakInside: 'auto', ...props.style }}>{children}</ol>
   ),
   strong: ({ children }) => (
     <strong className="font-bold" style={{ color: '#000000' }}>{children}</strong>
@@ -250,9 +250,9 @@ const TEMPLATES = [
   { id: 'executive', name: 'Executive', components: executiveTemplate }
 ];
 
-export default function ResultsPageExperimental() {
+export default function EditResumePage() {
   const router = useRouter();
-  const { matchScore, reset, generatedResumeText, resumeFile, jobDescription } = useAppStore();
+  const { matchScore, reset, generatedResumeText, setGeneratedResumeText, resumeFile, jobDescription } = useAppStore();
   const [copied, setCopied] = React.useState(false);
   const [downloading, setDownloading] = React.useState(false);
   const [downloadPdfSuccess, setDownloadPdfSuccess] = React.useState(false);
@@ -264,6 +264,29 @@ export default function ResultsPageExperimental() {
   
   const resumeRef = React.useRef<HTMLDivElement>(null);
   const activeTemplate = TEMPLATES[activeTemplateIndex];
+  
+  // Use a ref to always have access to the latest localText in the cleanup function
+  const localTextRef = React.useRef(localText);
+  React.useEffect(() => {
+    localTextRef.current = localText;
+  }, [localText]);
+
+  // Handle saving to global store
+  const saveToStore = React.useCallback((text: string) => {
+    setGeneratedResumeText(text);
+  }, [setGeneratedResumeText]);
+
+  // Auto-save to store on unmount
+  React.useEffect(() => {
+    return () => {
+      saveToStore(localTextRef.current);
+    };
+  }, [saveToStore]);
+
+  const handleBack = () => {
+    saveToStore(localText);
+    router.push('/results');
+  };
 
   React.useEffect(() => {
     if (generatedResumeText) {
@@ -350,17 +373,21 @@ export default function ResultsPageExperimental() {
       {/* Top Toolbar */}
       <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900 shrink-0">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.push('/results')} className="text-slate-400 hover:text-white transition-colors">
+          <button onClick={handleBack} className="text-slate-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="h-4 w-[1px] bg-slate-700" />
           <div className="flex bg-slate-950 rounded-lg p-1 border border-slate-800">
             <button 
               onClick={() => setViewMode('edit')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${viewMode === 'edit' ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                viewMode === 'edit'
+                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
             >
-              <Edit3 className="w-3.5 h-3.5" />
-              Markdown
+              <Edit3 className="w-4 h-4" />
+              Editor
             </button>
             <button 
               onClick={() => setViewMode('split')}
@@ -441,6 +468,7 @@ export default function ResultsPageExperimental() {
               <ResumeEditor 
                 content={localText} 
                 onChange={setLocalText} 
+                onSave={saveToStore}
               />
             ) : (
               <div className="flex-1 flex flex-col overflow-hidden bg-slate-950/20">
@@ -451,7 +479,7 @@ export default function ResultsPageExperimental() {
                     // Handle Ctrl+S or Cmd+S
                     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
                       e.preventDefault();
-                      setLocalText(localText); 
+                      saveToStore(localText); 
                       toast.success('Progress saved', { icon: '💾', style: { background: '#1e293b', color: '#fff', fontSize: '12px' } });
                     }
 

@@ -29,6 +29,9 @@ ${resumeText}
 Target Job Description:
 ${jobDescription}
 
+LENGTH TARGET: 
+Aim for a comprehensive content depth that naturally fills exactly TWO full pages. Ensure your descriptions are detailed enough to provide value while remaining professional and punchy to maintain reader engagement across the two pages.
+
 CRITICAL FORMATTING INSTRUCTION:
 The very first line of the "optimizedText" output MUST be the candidate's first and last name formatted as an H1 markdown header (e.g., "# John Doe"). The contact information MUST appear on the lines below the name. Do NOT put the name and contact info on the same line.
 

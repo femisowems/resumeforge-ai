@@ -32,6 +32,7 @@ import {
 interface ResumeEditorProps {
   content: string;
   onChange: (markdown: string) => void;
+  onSave?: (markdown: string) => void;
 }
 
 const MenuBar = ({ editor }: { editor: any }) => {
@@ -170,10 +171,11 @@ const MenuBar = ({ editor }: { editor: any }) => {
   );
 };
 
-const ResumeEditor = ({ content, onChange }: ResumeEditorProps) => {
+const ResumeEditor = ({ content, onChange, onSave }: ResumeEditorProps) => {
   const saveContent = (editor: any) => {
     const markdown = (editor.storage as any).markdown.getMarkdown();
     onChange(markdown);
+    if (onSave) onSave(markdown);
     toast.success('Progress saved', { icon: '💾', style: { background: '#1e293b', color: '#fff', fontSize: '12px' } });
   };
 
