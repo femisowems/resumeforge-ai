@@ -2,90 +2,88 @@
 
 **Land more interviews by letting AI tailor your resume to every job — in seconds.**
 
-ResumeForge AI analyzes your existing resume alongside any job description and produces a polished, targeted resume that is optimized to pass automated screening tools and catch a recruiter's eye.
+![ResumeForge AI Preview](apps/web/public/preview.png)
+
+ResumeForge AI is a premium, AI-powered resume optimization platform designed for modern tech professionals. It analyzes your existing resume alongside any job description to produce a high-converting, job-tailored resume optimized for both ATS screening and human recruiters.
 
 ---
 
-## ✨ What It Does
+## ✨ Key Features
 
-| Feature | Description |
-|---|---|
-| 🎨 **Visual WYSIWYG Editor** | Edit your resume like a Pro. Bold, highlight, and format your text visually — no Markdown knowledge required. |
-| 🎭 **Premium Templates** | Switch between **Classic, Modern, Minimalist, and Executive** styles with one click. |
-| 👀 **Live Preview** | See your changes update instantly on a professional "Page-on-Desk" preview. |
-| 🎯 **Smart AI Alignment** | automatically highlights and inserts the right keywords from the job description so your resume isn't filtered out. |
-| ⚡ **Instant Generation** | Get a fully tailored resume from your PDF/DOCX source in under 30 seconds. |
-| 💎 **Skill Badges** | Highlight key skills and turn them into stylish, colored pill badges for extra impact. |
-| 📥 **PDF & Docx Export** | Download your polished resume as a clean PDF or Word document. |
+- 🎨 **Visual WYSIWYG Editor**: A rich TipTap-based editor that lets you format your resume visually with bolding, lists, and highlighting.
+- 🎭 **Premium Templates**: Instantly switch between **Classic, Modern, Minimalist, and Executive** styles.
+- 👀 **Live Preview**: Real-time "Page-on-Desk" preview synchronized with your edits.
+- 🎯 **AI-Driven Optimization**: Powered by Google Gemini to inject perfect keywords and bridge skill gaps.
+- ⚡ **Sub-Minute Forging**: Generate a perfectly tailored draft from any PDF/DOCX in under 30 seconds.
+- 💎 **Smart Badges**: Automatic coloring of key skills and technologies for maximum impact.
+- 📥 **Enterprise Export**: High-fidelity PDF and DOCX downloads ready for submission.
 
 ---
 
 ## 🗺️ How It Works
 
-1. **Upload Your Resume** — Drop in your existing PDF or Word file.
-2. **Paste the Job Description** — Copy the listing from any job board.
-3. **Generate & Polish** — Let AI tailor the content, then use the **Visual Editor** to add your personal touch.
-4. **Choose Your Style** — Switch templates to find the perfect look.
-5. **Export** — Download your optimized PDF or DOCX and start applying!
+1. **Upload Content** — Drop in your current resume or paste your professional history.
+2. **Target Your Role** — Paste the job description you're aiming for.
+3. **AI Forging** — Let Gemini AI tailor the content and optimize for ATS compatibility.
+4. **Visual Polish** — Use the premium editor to make final touches and select your ideal template.
+5. **Download** — Export your high-priority PDF and start applying!
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Technical Stack
 
-### What You Need First
+### Frontend
+- **Framework**: Next.js 16 (App Router)
+- **Styling**: Tailwind CSS 4
+- **Editor**: TipTap (Headless WYSIWYG)
+- **State**: Zustand (with persistence)
+- **Icons**: Lucide React
 
-- [Node.js 18+](https://nodejs.org) — for the monorepo workspace
-- [PostgreSQL](https://www.postgresql.org) — the database
-- [Redis](https://redis.io) — for BullMQ background jobs
-
-### 1. Install Dependencies
-
-```bash
-# This installs dependencies for the root, api, web, and shared types workspaces all at once
-npm install
-```
-
-### 2. Start the Application
-
-```bash
-# Starts both the NestJS API and Next.js frontend concurrently
-# API will run on http://localhost:3001
-# Web will run on http://localhost:3000
-npm run dev
-```
-
-Then open **http://localhost:3000** in your browser and you're ready to go!
+### Backend
+- **Framework**: NestJS
+- **AI Engine**: Google Gemini Pro
+- **Queue**: BullMQ (with Redis)
+- **Database**: PostgreSQL (Prisma)
+- **Exports**: html2pdf.js & docx.js
 
 ---
 
-## 🏗️ Project Layout
+## 🏗️ Project Structure
 
 ```
 resumeforge-ai/
 ├── apps/
-│   ├── web/        # Next.js 16 frontend — TipTap WYSIWYG, TailwindCSS, Zustand
-│   └── api/        # NestJS backend — Google Gemini AI, BullMQ queues, PDF/DOCX processing
+│   ├── web/        # Next.js 16 App — Visual Editor & UI
+│   └── api/        # NestJS API — AI Logic & PDF Generation
 ├── packages/
-│   └── types/      # Shared TypeScript types across the monorepo
-└── package.json    # Monorepo workspaces & centralized scripts
+│   └── types/      # Shared TypeScript types
+└── package.json    # Monorepo configuration
 ```
 
 ---
 
-## 💡 Free to Try
+## 💡 Get Started
 
-- ✅ No credit card required to sign up
-- ✅ 2 free resume generations included
-- ✅ PDF export always included
+### Prerequisites
+- [Node.js 18+](https://nodejs.org)
+- [PostgreSQL](https://www.postgresql.org)
+- [Redis](https://redis.io)
+
+### Local Setup
+1. **Install dependencies**: `npm install`
+2. **Configure environment**: Set up `.env` files in both `apps/web` and `apps/api`.
+3. **Run development**: `npm run dev`
+
+Access the portal at **http://localhost:3000**.
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to open an issue or submit a pull request.
+Contributions are welcome! Please open an issue or submit a pull request.
 
 ---
 
 ## 📄 License
 
-This project is open source. See the `LICENSE` file for details.
+MIT License. See [LICENSE](file:///Users/femisowemimo/Documents/GitHub/resumeforge-ai/LICENSE) for details.
