@@ -1,7 +1,25 @@
 {
   "name": "resumeforge-ai",
   "version": "1.0.0",
+  "description": "AI-powered resume tailoring platform with a visual WYSIWYG editor and real-time preview.",
   "private": true,
+  "author": "Femi Sowemimo",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/femisowems/resumeforge-ai"
+  },
+  "keywords": [
+    "resume",
+    "ai",
+    "career",
+    "gpt",
+    "gemini",
+    "builder",
+    "nextjs",
+    "nestjs",
+    "tiptap"
+  ],
   "workspaces": [
     "apps/*",
     "packages/*"

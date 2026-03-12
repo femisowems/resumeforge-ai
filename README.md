@@ -10,19 +10,23 @@ ResumeForge AI analyzes your existing resume alongside any job description and p
 
 | Feature | Description |
 |---|---|
-| 🎯 **Smart Keyword Matching** | Automatically highlights and inserts the right keywords from the job description so your resume isn't filtered out before a human sees it. |
-| ⚡ **Instant Generation** | Upload your resume, paste a job description, and get a fully tailored resume in under 30 seconds. |
-| 📊 **Match Score** | See a real-time score showing how well your resume aligns with the job before you apply. |
-| 📄 **Multiple File Formats** | Upload your resume as a PDF or Word document (.docx) — no re-typing needed. |
-| 📥 **PDF Export** | Download your new, tailored resume as a clean, professional PDF. |
+| 🎨 **Visual WYSIWYG Editor** | Edit your resume like a Pro. Bold, highlight, and format your text visually — no Markdown knowledge required. |
+| 🎭 **Premium Templates** | Switch between **Classic, Modern, Minimalist, and Executive** styles with one click. |
+| 👀 **Live Preview** | See your changes update instantly on a professional "Page-on-Desk" preview. |
+| 🎯 **Smart AI Alignment** | automatically highlights and inserts the right keywords from the job description so your resume isn't filtered out. |
+| ⚡ **Instant Generation** | Get a fully tailored resume from your PDF/DOCX source in under 30 seconds. |
+| 💎 **Skill Badges** | Highlight key skills and turn them into stylish, colored pill badges for extra impact. |
+| 📥 **PDF & Docx Export** | Download your polished resume as a clean PDF or Word document. |
 
 ---
 
 ## 🗺️ How It Works
 
 1. **Upload Your Resume** — Drop in your existing PDF or Word file.
-2. **Paste the Job Description** — Copy the listing from any job board and paste it in.
-3. **Get Your Tailored Resume** — Click **Generate** and download your optimized resume.
+2. **Paste the Job Description** — Copy the listing from any job board.
+3. **Generate & Polish** — Let AI tailor the content, then use the **Visual Editor** to add your personal touch.
+4. **Choose Your Style** — Switch templates to find the perfect look.
+5. **Export** — Download your optimized PDF or DOCX and start applying!
 
 ---
 
@@ -59,11 +63,11 @@ Then open **http://localhost:3000** in your browser and you're ready to go!
 ```
 resumeforge-ai/
 ├── apps/
-│   ├── web/        # Next.js 14 frontend — React, TailwindCSS, Zustand
-│   └── api/        # NestJS backend — Auth, BullMQ queues, Gemini AI integration
+│   ├── web/        # Next.js 16 frontend — TipTap WYSIWYG, TailwindCSS, Zustand
+│   └── api/        # NestJS backend — Google Gemini AI, BullMQ queues, PDF/DOCX processing
 ├── packages/
-│   └── types/      # Shared TypeScript types for full-stack consistency
-└── package.json    # Root npm workspace commands
+│   └── types/      # Shared TypeScript types across the monorepo
+└── package.json    # Monorepo workspaces & centralized scripts
 ```
 
 ---

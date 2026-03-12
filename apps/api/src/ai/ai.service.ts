@@ -29,6 +29,9 @@ ${resumeText}
 Target Job Description:
 ${jobDescription}
 
+CRITICAL FORMATTING INSTRUCTION:
+The very first line of the "optimizedText" output MUST be the candidate's first and last name formatted as an H1 markdown header (e.g., "# John Doe"). The contact information MUST appear on the lines below the name. Do NOT put the name and contact info on the same line.
+
 Please provide the output in JSON format with three exact keys:
 - "optimizedText": The rewritten resume content, preserving professional formatting using Markdown.
 - "matchScore": An integer from 0 to 100 representing how well the original resume matches the job description.

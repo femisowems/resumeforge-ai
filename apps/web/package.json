@@ -1,6 +1,7 @@
 {
   "name": "web",
   "version": "0.1.0",
+  "description": "Next.js frontend for ResumeForge AI, featuring a TipTap visual editor and live resume preview.",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,6 +11,15 @@
   },
   "dependencies": {
     "@resumeforge/types": "*",
+    "@tiptap/extension-highlight": "^3.20.1",
+    "@tiptap/extension-horizontal-rule": "^3.20.1",
+    "@tiptap/extension-link": "^3.20.1",
+    "@tiptap/extension-placeholder": "^3.20.1",
+    "@tiptap/extension-text-align": "^3.20.1",
+    "@tiptap/extension-underline": "^3.20.1",
+    "@tiptap/pm": "^3.20.1",
+    "@tiptap/react": "^3.20.1",
+    "@tiptap/starter-kit": "^3.20.1",
     "axios": "^1.13.6",
     "docx": "^9.6.1",
     "file-saver": "^2.0.5",
@@ -22,7 +32,9 @@
     "react-dom": "19.2.3",
     "react-hot-toast": "^2.6.0",
     "react-markdown": "^10.1.0",
+    "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
+    "tiptap-markdown": "^0.9.0",
     "zustand": "^5.0.11"
   },
   "devDependencies": {

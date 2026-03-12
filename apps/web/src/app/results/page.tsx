@@ -19,7 +19,7 @@ import { saveAs } from 'file-saver';
 const classicTemplate: Components = {
   h1: ({ children }) => (
     <div className="text-center pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
-      <h1 className="text-3xl font-bold tracking-tight" style={{ color: '#0f172a' }}>{children}</h1>
+      <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#0f172a' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
@@ -66,7 +66,7 @@ const classicTemplate: Components = {
 const modernTemplate: Components = {
   h1: ({ children }) => (
     <div className="pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
-      <h1 className="text-4xl font-black tracking-tighter" style={{ color: '#0ea5e9', fontFamily: 'sans-serif' }}>{children}</h1>
+      <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#0ea5e9', fontFamily: 'sans-serif' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
@@ -113,7 +113,7 @@ const modernTemplate: Components = {
 const minimalistTemplate: Components = {
   h1: ({ children }) => (
     <div className="pb-1 mb-1" style={{ pageBreakInside: 'avoid' }}>
-      <h1 className="text-2xl font-normal tracking-wide" style={{ color: '#333333' }}>{children}</h1>
+      <h1 className="text-xl font-bold tracking-wide" style={{ color: '#333333' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
@@ -160,7 +160,7 @@ const minimalistTemplate: Components = {
 const executiveTemplate: Components = {
   h1: ({ children }) => (
     <div className="text-center pb-2 mb-2" style={{ pageBreakInside: 'avoid' }}>
-      <h1 className="text-3xl font-bold font-serif" style={{ color: '#000000', fontFamily: 'serif' }}>{children}</h1>
+      <h1 className="text-2xl font-bold font-serif" style={{ color: '#000000', fontFamily: 'serif' }}>{children}</h1>
     </div>
   ),
   h2: ({ children }) => (
@@ -422,13 +422,23 @@ export default function ResultsPage() {
         {/* Header Row */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-3">
-            <button
-              onClick={handleResetRequest}
-              className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-indigo-400 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Start
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleResetRequest}
+                className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-indigo-400 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Start
+              </button>
+              <div className="h-3 w-[1px] bg-slate-800" />
+              <button
+                onClick={() => router.push('/results-2')}
+                className="inline-flex items-center gap-2 text-[10px] font-bold text-indigo-400/70 hover:text-indigo-400 transition-colors uppercase tracking-widest border border-indigo-500/20 px-2 py-0.5 rounded-full bg-indigo-500/5 hover:bg-indigo-500/10"
+              >
+                <div className="w-1 h-1 rounded-full bg-indigo-500 animate-pulse" />
+                Experimental View
+              </button>
+            </div>
             <h1 className="text-4xl font-bold font-outfit text-white">Your Optimized Resume is Ready</h1>
             <p className="text-slate-400">Forged with precision for maximum ATS compatibility.</p>
           </div>
@@ -489,8 +499,8 @@ export default function ResultsPage() {
                 </div>
               </div>
 
-              {/* Resume content — this div is captured for PDF export */}
-              <div ref={resumeRef} className="px-4 py-8 sm:px-8 sm:py-10 flex-1" style={{ backgroundColor: '#ffffff', color: '#0f172a' }}>
+              {/* Resume content — captured for PDF export */}
+              <div ref={resumeRef} className="bg-white px-8 py-12 sm:px-14 sm:py-16 min-h-[1056px] flex-1" style={{ backgroundColor: '#ffffff', color: '#0f172a' }}>
                 {generatedResumeText ? (
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
