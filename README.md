@@ -11,21 +11,29 @@ ResumeForge AI is a premium, AI-powered resume optimization platform designed fo
 ## ✨ Key Features
 
 - 🎨 **Visual WYSIWYG Editor**: A rich TipTap-based editor that lets you format your resume visually with bolding, lists, and highlighting.
-- 🎭 **Premium Templates**: Instantly switch between **Classic, Modern, Minimalist, and Executive** styles.
+- 🎭 **Premium Templates**: Instantly switch between **Classic, Modern, Minimalist, and Executive** styles with high-fidelity, professional previews.
 - 👀 **Live Preview**: Real-time "Page-on-Desk" preview synchronized with your edits.
 - 🎯 **AI-Driven Optimization**: Powered by Google Gemini to inject perfect keywords and bridge skill gaps.
 - ⚡ **Sub-Minute Forging**: Generate a perfectly tailored draft from any PDF/DOCX in under 30 seconds.
 - 💎 **Smart Badges**: Automatic coloring of key skills and technologies for maximum impact.
 - 📥 **Enterprise Export**: High-fidelity PDF and DOCX downloads ready for submission.
 
+### 🖼️ Template Previews
+
+| Classic | Modern | Minimalist | Executive |
+| :---: | :---: | :---: | :---: |
+| ![Classic](apps/web/public/templates/classic.png) | ![Modern](apps/web/public/templates/modern.png) | ![Minimalist](apps/web/public/templates/minimalist.png) | ![Executive](apps/web/public/templates/executive.png) |
+
+---
+
 ---
 
 ## 🗺️ How It Works
 
-1. **Upload Content** — Drop in your current resume or paste your professional history.
+1. **Upload Content** — Drop in your current resume or paste your professional history via the global upload zone.
 2. **Target Your Role** — Paste the job description you're aiming for.
 3. **AI Forging** — Let Gemini AI tailor the content and optimize for ATS compatibility.
-4. **Visual Polish** — Use the premium editor to make final touches and select your ideal template.
+4. **Visual Polish** — Use the premium gallery to select your ideal template and refine with the visual editor.
 5. **Download** — Export your high-priority PDF and start applying!
 
 ---
@@ -33,14 +41,14 @@ ResumeForge AI is a premium, AI-powered resume optimization platform designed fo
 ## 🚀 Technical Stack
 
 ### Frontend
-- **Framework**: Next.js 16 (App Router)
-- **Styling**: Tailwind CSS 4
-- **Editor**: TipTap (Headless WYSIWYG)
-- **State**: Zustand (with persistence)
-- **Icons**: Lucide React
+- **Framework**: [Next.js 15](https://nextjs.org) (App Router)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com) (Modern utility-first CSS)
+- **Editor**: [TipTap](https://tiptap.dev) (Headless WYSIWYG)
+- **State**: [Zustand](https://zustand-demo.pmnd.rs) (with persistence)
+- **Icons**: [Lucide React](https://lucide.dev)
 
 ### Backend
-- **Framework**: NestJS
+- **Framework**: [NestJS](https://nestjs.com)
 - **AI Engine**: Google Gemini Pro
 - **Queue**: BullMQ (with Redis)
 - **Database**: PostgreSQL (Prisma)
