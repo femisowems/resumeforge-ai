@@ -15,9 +15,14 @@ export default function Footer() {
               <div className="bg-indigo-600 p-2 rounded-xl group-hover:scale-110 transition-transform">
                 <Cpu className="w-5 h-5 text-white" />
               </div>
-              <span className="text-lg font-black font-outfit text-white tracking-tight">
-                ResumeForge<span className="text-indigo-400">AI</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="text-lg font-black font-outfit text-white tracking-tight leading-none">
+                  ResumeForge<span className="text-indigo-400">AI</span>
+                </span>
+                <span className="text-[9px] font-black text-slate-500 tracking-wider uppercase mt-0.5">
+                  by starterdev.io
+                </span>
+              </div>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
               The professional AI resume builder designed to help engineers and tech professionals land interviews at top companies.
@@ -69,11 +74,15 @@ export default function Footer() {
         </div>
 
         <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-slate-500 text-xs">
-            © {new Date().getFullYear()} ResumeForge AI. All rights reserved.
-          </p>
-          <p className="text-slate-500 text-xs flex items-center gap-1">
-            Built with <Heart className="w-3 h-3 text-red-500 fill-current" /> for the engineering community.
+          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6">
+            <p className="text-slate-500 text-xs font-medium tracking-wide">
+              © {new Date().getFullYear()} ResumeForge AI. Crafted with precision for the modern professional.
+            </p>
+            <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-slate-800" />
+            <Link href="#" className="text-slate-500 hover:text-indigo-400 transition-colors text-xs font-medium">All Systems Operational</Link>
+          </div>
+          <p className="text-slate-500 text-xs font-medium flex items-center gap-1.5 group">
+            Built with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 group-hover:scale-125 transition-transform" /> by Femi Sowemimo
           </p>
         </div>
       </div>

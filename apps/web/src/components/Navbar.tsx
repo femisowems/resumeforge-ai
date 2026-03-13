@@ -15,9 +15,14 @@ export default function Navbar() {
           <div className="bg-indigo-600 p-2 rounded-xl group-hover:scale-110 transition-transform">
             <Cpu className="w-6 h-6 text-white" />
           </div>
-          <span className="text-xl font-black font-outfit text-white tracking-tight">
-            ResumeForge<span className="text-indigo-400">AI</span>
-          </span>
+          <div className="flex flex-col">
+            <span className="text-xl font-black font-outfit text-white tracking-tight leading-none">
+              ResumeForge<span className="text-indigo-400">AI</span>
+            </span>
+            <span className="text-[10px] font-black text-slate-500 tracking-wider uppercase mt-0.5">
+              by starterdev.io
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Links */}
