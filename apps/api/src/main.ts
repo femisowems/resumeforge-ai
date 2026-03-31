@@ -29,17 +29,21 @@ async function bootstrap() {
   return cachedServer;
 }
 
+const port = process.env.PORT || 3001;
+
+async function startServer() {
+  const server = await bootstrap();
+  // Vercel handles the listener, but on Railway/Docker we must call listen()
+  if (process.env.VERCEL !== '1') {
+    server.listen(port, '0.0.0.0', () => {
+      console.log(`\n🚀 API is running on http://0.0.0.0:${port}/api\n`);
+    });
+  }
+}
+
 export const handler = async (req: any, res: any) => {
   const server = await bootstrap();
   return server(req, res);
 };
 
-// Only listen locally, skip when running as a Vercel function
-if (process.env.NODE_ENV !== 'production') {
-  const port = process.env.PORT ?? 3001;
-  bootstrap().then(async (expressApp) => {
-    expressApp.listen(port, () => {
-      console.log(`\nAPI is running on http://localhost:${port}/api\n`);
-    });
-  });
-}
+startServer();
