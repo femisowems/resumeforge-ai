@@ -1,29 +1,43 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import express from 'express';
+
+let cachedServer: any;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.enableCors({
-    origin: [
-      'https://resumeforge.ssowemimo.com',
-      'http://localhost:3000',
-      'http://localhost:3001',
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-  });
-
-  app.setGlobalPrefix('api');
-  const port = process.env.PORT ?? 3001;
-  try {
-    await app.listen(port);
-  } catch (error: any) {
-    if (error.code === 'EADDRINUSE') {
-      console.error(`\nCRITICAL ERROR: Port ${port} is already in use.`);
-      console.error(`Please run 'lsof -i :${port}' and kill the process using 'kill -9 <PID>'.\n`);
-      process.exit(1);
-    }
-    throw error;
+  if (!cachedServer) {
+    const expressApp = express();
+    const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+    
+    app.enableCors({
+      origin: [
+        'https://resumeforge.ssowemimo.com',
+        'http://localhost:3000',
+        'http://localhost:3001',
+      ],
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      credentials: true,
+    });
+    
+    app.setGlobalPrefix('api');
+    await app.init();
+    cachedServer = expressApp;
   }
+  return cachedServer;
 }
-bootstrap();
+
+export const handler = async (req: any, res: any) => {
+  const server = await bootstrap();
+  return server(req, res);
+};
+
+// Only listen locally, skip when running as a Vercel function
+if (process.env.NODE_ENV !== 'production') {
+  const port = process.env.PORT ?? 3001;
+  bootstrap().then(async (expressApp) => {
+    expressApp.listen(port, () => {
+      console.log(`\nAPI is running on http://localhost:${port}/api\n`);
+    });
+  });
+}
