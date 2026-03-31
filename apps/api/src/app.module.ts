@@ -11,7 +11,10 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ 
+      isGlobal: true,
+      ignoreEnvFile: process.env.NODE_ENV === 'production'
+    }),
     BullModule.forRoot({
       connection: (process.env.REDIS_URL || process.env.REDISURL) 
         ? { url: process.env.REDIS_URL || process.env.REDISURL }
