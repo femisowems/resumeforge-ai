@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # The NestJS API service
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - redis
+    networks:
+      - resumeforge-network
+
+  # Redis for BullMQ handling
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - resumeforge-network
+
+networks:
+  resumeforge-network:
+    driver: bridge
+
+volumes:
+  redis-data:
