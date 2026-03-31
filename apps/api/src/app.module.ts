@@ -13,12 +13,14 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     BullModule.forRoot({
-      connection: {
-        host: process.env.REDIS_HOST || process.env.REDISHOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || process.env.REDISPORT || '6379', 10),
-        password: process.env.REDIS_PASSWORD || process.env.REDISPASSWORD,
-        tls: (process.env.REDIS_TLS === 'true' || !!process.env.REDIS_URL?.startsWith('rediss://')) ? {} : undefined,
-      },
+      connection: (process.env.REDIS_URL || process.env.REDISURL) 
+        ? { url: process.env.REDIS_URL || process.env.REDISURL }
+        : {
+            host: process.env.REDIS_HOST || process.env.REDISHOST || 'localhost',
+            port: parseInt(process.env.REDIS_PORT || process.env.REDISPORT || '6379', 10),
+            password: process.env.REDIS_PASSWORD || process.env.REDISPASSWORD,
+            tls: (process.env.REDIS_TLS === 'true' || !!process.env.REDIS_URL?.startsWith('rediss://')) ? {} : undefined,
+          },
     }),
     AuthModule,
     ResumesModule,
