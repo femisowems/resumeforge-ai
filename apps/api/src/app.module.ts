@@ -31,4 +31,11 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    const host = process.env.REDIS_HOST || process.env.REDISHOST;
+    const url = process.env.REDIS_URL || process.env.REDISURL;
+    const port = process.env.REDIS_PORT || process.env.REDISPORT;
+    console.log(`📡 [Redis Debug] Host: ${host || 'MISSING'}, Port: ${port || 'MISSING'}, HasURL: ${!!url}`);
+  }
+}
