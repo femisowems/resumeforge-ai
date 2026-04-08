@@ -35,6 +35,7 @@ export class GenerationProcessor extends WorkerHost {
         status: 'completed',
         resultText: result.optimizedText,
         matchScore: result.matchScore,
+        aiModel: result.aiModel,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });

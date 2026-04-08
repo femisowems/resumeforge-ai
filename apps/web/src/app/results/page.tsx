@@ -213,7 +213,7 @@ const TEMPLATES = [
 
 export default function ResultsPage() {
   const router = useRouter();
-  const { matchScore, reset, generatedResumeText, resumeFile, jobDescription } = useAppStore();
+  const { matchScore, reset, generatedResumeText, resumeFile, jobDescription, aiModel } = useAppStore();
   const [copied, setCopied] = React.useState(false);
   const [downloading, setDownloading] = React.useState(false);
   const [downloadPdfSuccess, setDownloadPdfSuccess] = React.useState(false);
@@ -616,6 +616,13 @@ export default function ResultsPage() {
               <p className="text-xs text-slate-400 leading-relaxed">
                 Your resume was tailored to significantly improve ATS keyword density, quantifiable achievements, and action verb strength to maximize match with this role.
               </p>
+              {aiModel && (
+                <div className="mt-4 pt-4 border-t border-indigo-900/50">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-900/40 text-[10px] font-semibold text-indigo-300 uppercase tracking-wider border border-indigo-800/50">
+                    <span className="text-xs">⚡</span> Powered by {aiModel}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>

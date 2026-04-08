@@ -11,6 +11,7 @@ interface AppState {
   matchScore: number | null;
   generatedResumeText: string | null;
   generatedResumeId: string | null;
+  aiModel: string | null;
   error: string | null;
   
   setResumeFile: (file: File | null) => void;
@@ -32,6 +33,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   matchScore: null,
   generatedResumeText: null,
   generatedResumeId: null,
+  aiModel: null,
   error: null,
 
   setResumeFile: (file) => set({ resumeFile: file }),
@@ -88,6 +90,7 @@ export const useAppStore = create<AppState>((set, get) => ({
           generationStep: 'completed',
           matchScore: doc.matchScore || 85,
           generatedResumeText: doc.resultText,
+          aiModel: doc.aiModel,
         });
       } else if (doc && doc.status === 'failed') {
         console.warn('Job failed on server:', jobId, doc.error);
@@ -119,6 +122,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     generationStep: 'idle',
     matchScore: null,
     generatedResumeText: null,
-    generatedResumeId: null
+    generatedResumeId: null,
+    aiModel: null
   }),
 }));

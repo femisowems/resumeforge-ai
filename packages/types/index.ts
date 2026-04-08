@@ -13,6 +13,7 @@ export interface GenerationJob {
   status: 'pending' | 'processing' | 'completed' | 'failed';
   resultText?: string;
   matchScore?: number;
+  aiModel?: string;
   error?: string;
   createdAt: string;
   updatedAt: string;
