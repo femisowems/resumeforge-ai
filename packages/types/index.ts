@@ -15,6 +15,7 @@ export interface GenerationJob {
   matchScore?: number;
   aiModel?: string;
   error?: string;
+  currentWarning?: string;
   createdAt: string;
   updatedAt: string;
 }

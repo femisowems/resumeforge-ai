@@ -41,7 +41,7 @@ export default function UploadPage() {
     jobDescription, setJobDescription, 
     startGeneration, isGenerating, 
     generationStep, pollJobStatus,
-    generatedResumeId
+    generatedResumeId, currentWarning
   } = useAppStore();
   
   const [isDragging, setIsDragging] = useState(false);
@@ -87,6 +87,16 @@ export default function UploadPage() {
       toast.error(error || "Generation failed. Please try again with different inputs.");
     }
   }, [generationStep, router]);
+
+  // Show warnings (fallback triggers)
+  React.useEffect(() => {
+    if (currentWarning) {
+      toast.error(currentWarning, {
+        icon: '⚠️',
+        duration: 5000,
+      });
+    }
+  }, [currentWarning]);
 
   // Global paste listener — works anywhere on the page
   React.useEffect(() => {

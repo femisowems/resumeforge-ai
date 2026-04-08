@@ -13,6 +13,7 @@ interface AppState {
   generatedResumeId: string | null;
   aiModel: string | null;
   error: string | null;
+  currentWarning: string | null;
   
   setResumeFile: (file: File | null) => void;
   setPastedResumeText: (text: string) => void;
@@ -35,6 +36,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   generatedResumeId: null,
   aiModel: null,
   error: null,
+  currentWarning: null,
 
   setResumeFile: (file) => set({ resumeFile: file }),
   setPastedResumeText: (text) => set({ pastedResumeText: text }),
@@ -100,6 +102,17 @@ export const useAppStore = create<AppState>((set, get) => ({
           error: doc.error || 'Unknown error occurred'
         });
       }
+
+      // Show toast if a new warning (fallback notification) arrived
+      if (doc && doc.currentWarning && doc.currentWarning !== get().currentWarning) {
+        // Use a dynamic import or assuming toast is globally available if injected, 
+        // but here we can just update the state and let a component handle it, OR 
+        // directly import toast at the top of useAppStore.ts if we haven't already!
+        
+        // Let's set it in state, then we can add a useEffect in upload/page.tsx 
+        // or just import toast here since we're in the store.
+        set({ currentWarning: doc.currentWarning });
+      }
     } catch (error: any) {
       console.error('Polling failed:', {
         message: error.message,
@@ -123,6 +136,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     matchScore: null,
     generatedResumeText: null,
     generatedResumeId: null,
-    aiModel: null
+    aiModel: null,
+    currentWarning: null
   }),
 }));

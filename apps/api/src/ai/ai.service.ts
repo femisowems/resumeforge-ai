@@ -51,7 +51,11 @@ export class AiService {
     return models;
   }
 
-  async forgeResume(resumeText: string, jobDescription: string): Promise<{
+  async forgeResume(
+    resumeText: string, 
+    jobDescription: string,
+    onWarning?: (warning: string) => void | Promise<void>
+  ): Promise<{
     optimizedText: string;
     matchScore: number;
     insights: string;
@@ -99,6 +103,13 @@ The very first line of the "optimizedText" output MUST be the candidate's first 
       } catch (error: any) {
         this.logger.warn(`Model API ${id} failed. Attempting fallback if available. Error: ${error.message}`);
         lastError = error;
+        if (onWarning) {
+          try {
+            await onWarning(`Provider ${id} unavailable. Switching to fallback AI...`);
+          } catch (cbError) {
+             this.logger.error('Failed to execute onWarning callback', cbError);
+          }
+        }
       }
     }
 
@@ -107,10 +118,19 @@ The very first line of the "optimizedText" output MUST be the candidate's first 
     
     let errorMessage = 'Failed to generate resume optimization. All fallback providers are exhausted or out of service.';
     
-    if (lastError?.statusCode === 429 || lastError?.status === 429) {
-      errorMessage = 'AI API Quotas Exceeded across all configured providers. Please try again later.';
-    } else if (lastError?.message) {
-      errorMessage = `AI Error: ${lastError.message}`;
+    // Attempt to stringify clean error messages if the API returned JSON inside the error message
+    let parsedApiError = lastError?.message;
+    try {
+      if (parsedApiError && parsedApiError.startsWith('{')) {
+        const parsed = JSON.parse(parsedApiError);
+        parsedApiError = parsed.error?.message || parsed.message || parsedApiError;
+      }
+    } catch(e) {}
+
+    if (lastError?.statusCode === 429 || lastError?.status === 429 || lastError?.statusCode === 503 || lastError?.status === 503 || lastError?.statusCode === 401 || lastError?.status === 401 || lastError?.statusCode === 403 || lastError?.status === 403) {
+      errorMessage = 'All configured AI providers failed (high demand, quota exceeded, or invalid keys). Please check your API keys or try again later.';
+    } else if (parsedApiError) {
+      errorMessage = `All AI providers failed. Final API Error: ${parsedApiError}`;
     }
     
     const enhancedError = new Error(errorMessage);
