@@ -16,6 +16,7 @@ export class ResumesController {
     @UploadedFile() file: Express.Multer.File,
     @Body('jobDescription') jobDescription: string,
     @Body('resumeText') resumeText?: string,
+    @Body('aiProvider') aiProvider?: string,
   ) {
     if (!file && !resumeText) {
       throw new BadRequestException('Resume file or text is required');
@@ -35,7 +36,7 @@ export class ResumesController {
     }
     
     // Kick off the generation queue with the parsed text
-    const queueResult = await this.generationService.queueGeneration(text, jobDescription);
+    const queueResult = await this.generationService.queueGeneration(text, jobDescription, aiProvider);
 
     return {
       message: 'Resume parsing and generation queued successfully',

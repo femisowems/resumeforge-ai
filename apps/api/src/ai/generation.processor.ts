@@ -21,10 +21,10 @@ export class GenerationProcessor extends WorkerHost {
     // Start timing
     const start = Date.now();
     try {
-      const { resumeText, jobDescription, jobId } = job.data;
+      const { resumeText, jobDescription, jobId, aiProvider } = job.data;
       
       this.logger.log(`Job ${jobId}: Forging resume...`);
-      const result = await this.aiService.forgeResume(resumeText, jobDescription, async (warning) => {
+      const result = await this.aiService.forgeResume(resumeText, jobDescription, aiProvider, async (warning) => {
         const existingDoc = await this.documentsService.getById(jobId);
         if (existingDoc) {
           this.documentsService.saveDocument(jobId, { ...existingDoc, currentWarning: warning });

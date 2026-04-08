@@ -41,7 +41,8 @@ export default function UploadPage() {
     jobDescription, setJobDescription, 
     startGeneration, isGenerating, 
     generationStep, pollJobStatus,
-    generatedResumeId, currentWarning
+    generatedResumeId, currentWarning,
+    preferredAiProvider, setPreferredAiProvider
   } = useAppStore();
   
   const [isDragging, setIsDragging] = useState(false);
@@ -269,7 +270,33 @@ export default function UploadPage() {
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col items-center gap-6">
+        {/* AI Model Selector */}
+        <div className="max-w-xl mx-auto space-y-4">
+          <label className="block text-sm font-semibold text-slate-300 text-center">Select AI Engine</label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-slate-900/50 p-2 rounded-2xl border border-slate-800">
+            {[
+              { id: 'auto', label: 'Auto (Fastest)' },
+              { id: 'openai', label: 'OpenAI (GPT-4o)' },
+              { id: 'anthropic', label: 'Anthropic (Claude)' },
+              { id: 'google', label: 'Google (Gemini)' },
+            ].map(provider => (
+              <button
+                key={provider.id}
+                onClick={() => setPreferredAiProvider(provider.id)}
+                className={`
+                  py-2.5 px-3 rounded-xl text-xs font-bold transition-all
+                  ${preferredAiProvider === provider.id 
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' 
+                    : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800'}
+                `}
+              >
+                {provider.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="pt-2 flex flex-col items-center gap-6">
           <button 
             disabled={!isReady}
             onClick={handleForge}

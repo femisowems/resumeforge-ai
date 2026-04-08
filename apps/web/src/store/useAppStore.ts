@@ -14,6 +14,7 @@ interface AppState {
   aiModel: string | null;
   error: string | null;
   currentWarning: string | null;
+  preferredAiProvider: string;
   
   setResumeFile: (file: File | null) => void;
   setPastedResumeText: (text: string) => void;
@@ -22,6 +23,7 @@ interface AppState {
   pollJobStatus: (jobId: string) => Promise<void>;
   setGeneratedResumeText: (text: string) => void;
   setGenerationStep: (step: AppState['generationStep']) => void;
+  setPreferredAiProvider: (provider: string) => void;
   reset: () => void;
 }
 
@@ -37,13 +39,15 @@ export const useAppStore = create<AppState>((set, get) => ({
   aiModel: null,
   error: null,
   currentWarning: null,
+  preferredAiProvider: 'auto',
 
   setResumeFile: (file) => set({ resumeFile: file }),
   setPastedResumeText: (text) => set({ pastedResumeText: text }),
   setJobDescription: (jd) => set({ jobDescription: jd }),
+  setPreferredAiProvider: (provider) => set({ preferredAiProvider: provider }),
   setGeneratedResumeText: (text) => set({ generatedResumeText: text }),
   startGeneration: async () => {
-    const { resumeFile, pastedResumeText, jobDescription } = get();
+    const { resumeFile, pastedResumeText, jobDescription, preferredAiProvider } = get();
     if (!resumeFile && !pastedResumeText.trim()) return;
 
     set({ isGenerating: true, generationStep: 'parsing', error: null });
@@ -56,6 +60,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         formData.append('resumeText', pastedResumeText);
       }
       formData.append('jobDescription', jobDescription);
+      formData.append('aiProvider', preferredAiProvider);
 
       // Using the centralized backend API URL
       const response = await axios.post(api('resumes/upload'), formData, {
@@ -137,6 +142,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     generatedResumeText: null,
     generatedResumeId: null,
     aiModel: null,
-    currentWarning: null
+    currentWarning: null,
+    preferredAiProvider: 'auto'
   }),
 }));

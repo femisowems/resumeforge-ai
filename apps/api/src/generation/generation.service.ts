@@ -13,7 +13,7 @@ export class GenerationService {
     private readonly documentsService: DocumentsService
   ) {}
 
-  async queueGeneration(resumeText: string, jobDescription: string) {
+  async queueGeneration(resumeText: string, jobDescription: string, aiProvider?: string) {
     const jobId = randomUUID();
 
     this.documentsService.saveDocument(jobId, {
@@ -33,7 +33,8 @@ export class GenerationService {
     await this.generationQueue.add('forge', {
       resumeText,
       jobDescription,
-      jobId
+      jobId,
+      aiProvider
     }, {
       jobId, // Unique BullMQ job ID
     });

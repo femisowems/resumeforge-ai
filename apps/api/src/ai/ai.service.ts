@@ -10,11 +10,13 @@ export class AiService {
   private readonly logger = new Logger(AiService.name);
 
   // Helper method to resolve available models in order of priority
-  private getAvailableModels(): { id: string; model: LanguageModel }[] {
+  private getAvailableModels(requestedProvider?: string): { id: string; model: LanguageModel }[] {
     const models: { id: string; model: LanguageModel }[] = [];
 
     // Optional override order
-    const preferredProvider = process.env.AI_PROVIDER?.toLowerCase();
+    const preferredProvider = (requestedProvider && requestedProvider !== 'auto') 
+      ? requestedProvider.toLowerCase() 
+      : process.env.AI_PROVIDER?.toLowerCase();
 
     const loadProvider = (providerStr: string) => {
       // Check for available keys to avoid instantiating invalid models
@@ -54,6 +56,7 @@ export class AiService {
   async forgeResume(
     resumeText: string, 
     jobDescription: string,
+    requestedProvider?: string,
     onWarning?: (warning: string) => void | Promise<void>
   ): Promise<{
     optimizedText: string;
@@ -79,7 +82,7 @@ CRITICAL FORMATTING INSTRUCTION:
 The very first line of the "optimizedText" output MUST be the candidate's first and last name formatted as an H1 markdown header (e.g., "# John Doe"). The contact information MUST appear on the lines below the name. Do NOT put the name and contact info on the same line.
 `;
 
-    const models = this.getAvailableModels();
+    const models = this.getAvailableModels(requestedProvider);
     let lastError: any = null;
 
     // Retry loop through all configured/available providers
