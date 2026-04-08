@@ -273,11 +273,12 @@ export default function UploadPage() {
         {/* AI Model Selector */}
         <div className="max-w-xl mx-auto space-y-4">
           <label className="block text-sm font-semibold text-slate-300 text-center">Select AI Engine</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-slate-900/50 p-2 rounded-2xl border border-slate-800">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 bg-slate-900/50 p-2 rounded-2xl border border-slate-800">
             {[
-              { id: 'auto', label: 'Auto (Fastest)' },
+              { id: 'auto', label: 'Auto (Fast)' },
               { id: 'openai', label: 'OpenAI (GPT-4o)' },
               { id: 'anthropic', label: 'Anthropic (Claude)' },
+              { id: 'deepseek', label: 'DeepSeek (V3)' },
               { id: 'google', label: 'Google (Gemini)' },
             ].map(provider => (
               <button
@@ -341,7 +342,12 @@ export default function UploadPage() {
             </div>
             
             <div className="space-y-3">
-              <h3 className="text-2xl font-bold text-white font-outfit tracking-tight">Forging Your Resume</h3>
+              <h3 className="text-2xl font-bold text-white font-outfit tracking-tight">
+                Forging Your Resume
+                <span className="block text-sm text-indigo-400 mt-1 font-inter font-medium tracking-wide">
+                  with {preferredAiProvider === 'auto' ? 'Auto Fallback Engine' : preferredAiProvider === 'openai' ? 'OpenAI (GPT-4o)' : preferredAiProvider === 'anthropic' ? 'Anthropic (Claude)' : preferredAiProvider === 'deepseek' ? 'DeepSeek (V3)' : 'Google (Gemini)'}
+                </span>
+              </h3>
               <p className="text-slate-400 text-sm font-medium h-5">
                 {progress < 30 ? 'Analyzing professional profile...' : progress < 60 ? 'Tailoring to job requirements...' : progress < 90 ? 'Optimizing for ATS systems...' : 'Finalizing draft...'}
               </p>

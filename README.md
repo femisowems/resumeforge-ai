@@ -13,7 +13,7 @@ ResumeForge AI is a premium, AI-powered resume optimization platform designed fo
 - 🎨 **Visual WYSIWYG Editor**: A rich TipTap-based editor that lets you format your resume visually with bolding, lists, and highlighting.
 - 🎭 **Premium Templates**: Instantly switch between **Classic, Modern, Minimalist, and Executive** styles with high-fidelity, professional previews.
 - 👀 **Live Preview**: Real-time "Page-on-Desk" preview synchronized with your edits.
-- 🎯 **AI-Driven Optimization**: Powered by Google Gemini to inject perfect keywords and bridge skill gaps.
+- 🎯 **AI-Driven Optimization**: Powered by OpenAI, Anthropic, DeepSeek, and Google Gemini to seamlessly inject perfect keywords and bridge skill gaps.
 - ⚡ **Sub-Minute Forging**: Generate a perfectly tailored draft from any PDF/DOCX in under 30 seconds.
 - 💎 **Smart Badges**: Automatic coloring of key skills and technologies for maximum impact.
 - 📥 **Enterprise Export**: High-fidelity PDF and DOCX downloads ready for submission.
@@ -32,7 +32,7 @@ ResumeForge AI is a premium, AI-powered resume optimization platform designed fo
 
 1. **Upload Content** — Drop in your current resume or paste your professional history via the global upload zone.
 2. **Target Your Role** — Paste the job description you're aiming for.
-3. **AI Forging** — Let Gemini AI tailor the content and optimize for ATS compatibility.
+3. **AI Forging** — Let your chosen AI (GPT-4o, Claude 3.5, DeepSeek V3, or Gemini) meticulously tailor the content and optimize for ATS compatibility.
 4. **Visual Polish** — Use the premium gallery to select your ideal template and refine with the visual editor.
 5. **Download** — Export your high-priority PDF and start applying!
 
@@ -49,7 +49,8 @@ ResumeForge AI is a premium, AI-powered resume optimization platform designed fo
 
 ### Backend
 - **Framework**: [NestJS](https://nestjs.com)
-- **AI Engine**: Google Gemini Pro
+- **AI Engine**: Vercel AI SDK (OpenAI, Anthropic Claude, DeepSeek, Google Gemini)
+- **Architecture**: Multi-provider resilience loop with manual UI overrides.
 - **Queue**: BullMQ (with Redis)
 - **Database**: PostgreSQL (Prisma)
 - **Exports**: html2pdf.js & docx.js
@@ -79,7 +80,7 @@ resumeforge-ai/
 
 ### Local Setup
 1. **Install dependencies**: `npm install`
-2. **Configure environment**: Set up `.env` files in both `apps/web` and `apps/api`.
+2. **Configure environment**: Set up `.env` files in both `apps/web` and `apps/api`. Add `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `DEEPSEEK_API_KEY`, and `GEMINI_API_KEY` to `apps/api/.env`.
 3. **Run development**: `npm run dev`
 
 Access the portal at **http://localhost:3000**.

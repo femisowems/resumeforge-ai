@@ -3,6 +3,7 @@ import { generateObject, LanguageModel } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAnthropic } from '@ai-sdk/anthropic';
+import { createDeepSeek } from '@ai-sdk/deepseek';
 import { z } from 'zod';
 
 @Injectable()
@@ -18,19 +19,37 @@ export class AiService {
       ? requestedProvider.toLowerCase() 
       : process.env.AI_PROVIDER?.toLowerCase();
 
+    const gatewayUrl = process.env.VERCEL_AI_GATEWAY_URL;
+
     const loadProvider = (providerStr: string) => {
       // Check for available keys to avoid instantiating invalid models
       if (providerStr === 'openai' && process.env.OPENAI_API_KEY) {
-        const openai = createOpenAI({ apiKey: process.env.OPENAI_API_KEY });
+        const openai = createOpenAI({ 
+          apiKey: process.env.OPENAI_API_KEY,
+          baseURL: gatewayUrl ? `${gatewayUrl}/openai` : undefined
+        });
         models.push({ id: 'openai (gpt-4o-mini)', model: openai('gpt-4o-mini') });
       }
       if (providerStr === 'anthropic' && process.env.ANTHROPIC_API_KEY) {
-        const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+        const anthropic = createAnthropic({ 
+          apiKey: process.env.ANTHROPIC_API_KEY,
+          baseURL: gatewayUrl ? `${gatewayUrl}/anthropic` : undefined
+        });
         models.push({ id: 'anthropic (claude-3-5-sonnet-latest)', model: anthropic('claude-3-5-sonnet-latest') });
       }
       if (providerStr === 'google' && process.env.GEMINI_API_KEY) {
-        const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
+        const google = createGoogleGenerativeAI({ 
+          apiKey: process.env.GEMINI_API_KEY,
+          baseURL: gatewayUrl ? `${gatewayUrl}/google-generative-ai` : undefined
+        });
         models.push({ id: 'google (gemini-2.5-flash)', model: google('gemini-2.5-flash') });
+      }
+      if (providerStr === 'deepseek' && process.env.DEEPSEEK_API_KEY) {
+        const deepseek = createDeepSeek({ 
+          apiKey: process.env.DEEPSEEK_API_KEY,
+          baseURL: gatewayUrl ? `${gatewayUrl}/deepseek` : undefined
+        });
+        models.push({ id: 'deepseek (deepseek-chat)', model: deepseek('deepseek-chat') });
       }
     };
 
@@ -42,6 +61,7 @@ export class AiService {
     // Load remaining providers as fallbacks (order of general reliability for JSON extraction)
     if (preferredProvider !== 'openai') loadProvider('openai');
     if (preferredProvider !== 'anthropic') loadProvider('anthropic');
+    if (preferredProvider !== 'deepseek') loadProvider('deepseek');
     if (preferredProvider !== 'google') loadProvider('google');
 
     // If no API keys were found at all, add a dummy model that will error properly
