@@ -43,6 +43,8 @@ export class AiService {
           baseURL: gatewayUrl ? `${gatewayUrl}/google-generative-ai` : undefined
         });
         models.push({ id: 'google (gemini-2.5-flash)', model: google('gemini-2.5-flash') });
+        models.push({ id: 'google (gemini-1.5-flash)', model: google('gemini-1.5-flash') });
+        models.push({ id: 'google (gemini-2.0-flash)', model: google('gemini-2.0-flash') });
       }
       if (providerStr === 'deepseek' && process.env.DEEPSEEK_API_KEY) {
         const deepseek = createDeepSeek({ 
@@ -118,6 +120,7 @@ The very first line of the "optimizedText" output MUST be the candidate's first 
             insights: z.string().describe('A brief two-sentence explanation of what key improvements you made to align with the job description.'),
           }),
           prompt: prompt,
+          maxRetries: 0,
         });
 
         this.logger.log(`AI optimization successful via ${id}.`);
